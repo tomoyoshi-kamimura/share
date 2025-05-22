@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-F-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Googleのマイドライブから共有ドライブへのデータ移行手順</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans JP', 'Inter', sans-serif;
+            background-color: #F2F2F2; /* 指定: 背景に使用中のライトグレー */
+            color: #373737; /* 指定: 黒過ぎないブラック */
+        }
+
+        /* 新しい青のカラースキーム */
+        /* メインの明るい青: #0284c7 (sky-600) */
+        /* 濃い青1: #0070C0 (旧メインブルー) */
+        /* 濃い青2: #014A86 (旧ネイビー) */
+        /* 薄い青: #E0F2FE (sky-100) */
+        /* アクセントピンク: #E4007F (微量に使用) */
+
+        /* アクセントカラー1: 青系 (Primary - 明るめ) */
+        .accent-primary-bg { background-color: #0284c7; } /* 新メインブルー */
+        .accent-primary-text { color: #0284c7; }
+        .accent-primary-border { border-color: #0284c7; }
+        .accent-primary-light-bg { background-color: #E0F2FE; } /* 新ライトブルー */
+        .accent-primary-light-text { color: #0284c7; }
+        .accent-primary-dark-text { color: #0070C0; } /* 旧メインブルーを濃い青として使用 */
+        .accent-primary-darker-text { color: #014A86; } /* 旧ネイビーをさらに濃い青として使用 */
+
+
+        /* アクセントカラー2: ピンク系 (Secondary/Accent from palette - 微量に使用) */
+        .accent-secondary-text-critical { color: #E4007F; } /* 特に重要な警告に限定 */
+        .icon-key-accent::before { /* キーアイコンのみピンク */
+            content: "🔑";
+            margin-right: 0.5em;
+            color: #E4007F;
+        }
+
+
+        .section-title {
+            font-size: 1.875rem; /* text-3xl */
+            font-weight: 700;
+            color: #014A86; /* 濃い青2 */
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #0284c7; /* 新メインブルー */
+        }
+        .subsection-title {
+            font-size: 1.5rem; /* text-2xl */
+            font-weight: 600;
+            color: #0070C0; /* 濃い青1 */
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .point-box {
+            background-color: #ffffff;
+            border-left: 4px solid #0284c7; /* 新メインブルー */
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.375rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+        .point-box strong, .important-text { /* デフォルトの強調は濃い青1 */
+            color: #0070C0;
+            font-weight: 600;
+        }
+        .rule-highlight { /* ルール強調は新ライトブルー背景 */
+            background-color: #E0F2FE; /* 新ライトブルー */
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-weight: 500;
+            border: 1px solid #BAE6FD; /* sky-200相当 */
+            color: #0369A1; /* sky-700相当 */
+        }
+        .folder-name {
+            font-family: monospace;
+            background-color: #e5e7eb; /* Tailwind gray-200 */
+            padding: 0.1em 0.4em;
+            border-radius: 0.25rem;
+            color: #373737;
+            font-weight: 600;
+        }
+        /* アイコンのデフォルト色 (キーアイコン以外) */
+        .icon-folder::before { content: "📂"; margin-right: 0.5em; color: #0284c7; } /* 新メインブルー */
+        .icon-user::before { content: "👤"; margin-right: 0.5em; color: #4b5563; }
+        .icon-arrow-right::before { content: "➡️"; margin-right: 0.25em; margin-left: 0.25em; color: #4b5563; }
+
+        .step-number {
+            background-color: #0284c7; /* 新メインブルー */
+            color: white;
+            border-radius: 50%;
+            width: 2rem;
+            height: 2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 0.75rem;
+            flex-shrink: 0;
+        }
+        hr.section-divider {
+            border-top: 2px dashed #9ca3af; /* Tailwind gray-400 */
+            margin-top: 2.5rem;
+            margin-bottom: 2.5rem;
+        }
+        .caution-box { /* 注意喚起は新ライトブルー背景を基本に */
+            background-color: #E0F2FE; /* 新ライトブルー */
+            border: 1px solid #0284c7; /* 新メインブルー */
+            padding: 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+        }
+        .caution-box .fa-triangle-exclamation { /* アイコンは新メインブルー */
+            color: #0284c7;
+            margin-right: 0.5rem;
+        }
+        /* 重要な警告テキスト（ピンク）とアイコン（ピンク） */
+        .caution-box-critical {
+             background-color: #FCE4F3; /* ピンクの薄い色 (派生) */
+             border: 1px solid #E4007F; /* アクセントピンク */
+        }
+        .caution-box-critical .fa-triangle-exclamation {
+            color: #E4007F;
+        }
+        .text-danger-critical { /* 特に危険なテキストのみピンク */
+            color: #E4007F;
+            font-weight: bold;
+        }
+
+        .text-success {
+             color: #0284c7; /* 新メインブルー */
+        }
+        .main-content-card {
+            background-color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body> <div class="container mx-auto p-6 md:p-10 max-w-7xl">
+
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl md:text-4xl font-bold accent-primary-dark-text mb-3">
+                <i class="fas fa-cloud-arrow-up mr-2"></i>Googleのマイドライブから共有ドライブへのデータ移行手順
+            </h1>
+            <p class="text-gray-500 text-md">2025年5月20日改訂</p> </header>
+
+        <section id="はじめに" class="mb-12 p-6 main-content-card">
+            <h2 class="section-title"><span class="text-gray-400 mr-2">A.</span>はじめに</h2> <p class="mb-6 text-lg text-gray-700">この手順は、マイドライブにあるご自身のデータを、組織で管理する「共有ドライブ」へ安全に移行するためのガイドです。スムーズな移行にご協力をお願いいたします。</p> <div class="grid md:grid-cols-2 gap-6">
+                <div class="point-box">
+                    <h3 class="subsection-title text-xl"><i class="fas fa-users mr-2 accent-primary-light-text"></i>オーナー権限が「組織」へ</h3>
+                    <p>マイドライブから共有ドライブへファイルを移動すると、ファイルの所有者が「個人」から「<strong class="text-success text-lg">組織（会社）</strong>」に変わります。これが今回の移行の最も重要な目的です。</p>
+                </div>
+
+                <div class="point-box">
+                    <h3 class="subsection-title text-xl"><i class="fas fa-exclamation-triangle mr-2 accent-secondary-text-critical"></i>データ移動の基本ルール</h3>
+                    <ul class="list-none space-y-3">
+                        <li class="flex items-start">
+                            <i class="fas fa-times-circle accent-secondary-text-critical mr-2 mt-1"></i>
+                            <span><strong class="text-danger-critical">フォルダごと直接移動は不可</strong>: マイドライブからフォルダを直接共有ドライブへ移動できません。必ずフォルダ内の「<span class="rule-highlight">ファイルを選択</span>」して移動してください。</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-folder-tree accent-primary-light-text mr-2 mt-1"></i>
+                            <span><strong>一時保管場所</strong>: まず、共有ドライブ内の「<span class="folder-name">データ移行用フォルダ</span>」にある「<strong class="accent-primary-text">（ご自身の名前）フォルダ</strong>」へファイルを移動します。
+                                <ul class="list-disc list-inside ml-4 mt-1 text-sm text-gray-600"> <li>この操作でオーナー権限が組織に変わります。</li>
+                                </ul>
+                            </span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-tasks text-success mr-2 mt-1"></i>
+                            <span><strong>最終的な整理</strong>: 一時保管後、各自またはチームで、共有ドライブ内の「<span class="folder-name">プロジェクト</span>」フォルダなど、定められた最終的な保管場所へ整理します。</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-8 p-4 accent-primary-light-bg border accent-primary-border rounded-lg text-center">
+                <h3 class="font-semibold accent-primary-dark-text text-lg"><i class="fas fa-question-circle mr-2"></i>困ったときの相談は</h3>
+                <p class="accent-primary-text">移行できないデータや手順に不明な点があれば、<strong class="accent-primary-dark-text">毎週金曜の社内MTG時</strong>に管理者に相談してください。</p>
+            </div>
+        </section>
+
+        <hr class="section-divider">
+
+        <section id="目的と流れ" class="mb-12 p-6 main-content-card">
+            <h2 class="section-title"><span class="text-gray-400 mr-2">B.</span>移行の目的と全体の流れ</h2>
+            <div class="grid md:grid-cols-2 gap-6 items-center">
+                <div>
+                    <h3 class="subsection-title"><i class="fas fa-bullseye mr-2 text-success"></i>目的</h3>
+                    <p class="text-gray-700">業務データの一元管理と引き継ぎ円滑化。組織所有により、メンバー異動時のデータ散逸を防ぎます。</p>
+                </div>
+                <div>
+                    <h3 class="subsection-title"><i class="fas fa-sitemap mr-2 accent-primary-text"></i>全体の流れ</h3>
+                    <ol class="list-none space-y-3">
+                        <li class="flex items-center p-3 bg-gray-100 rounded-md shadow-sm"> <span class="step-number bg-gray-400">1</span> <span class="icon-key-accent">共有ドライブ準備 (管理者)</span>
+                        </li>
+                        <li class="flex items-center p-3 accent-primary-light-bg rounded-md shadow-sm ring-2 accent-primary-border">
+                            <span class="step-number">2</span>
+                            <span class="icon-user"><strong>データ移行 (各ユーザー)</strong></span>
+                            <span class="ml-2 px-2 py-1 text-xs accent-primary-light-bg accent-primary-dark-text rounded-full font-semibold border accent-primary-border">この手順書の中心</span> </li>
+                        <li class="flex items-center p-3 bg-gray-100 rounded-md shadow-sm">
+                            <span class="step-number bg-gray-400">3</span>
+                            <i class="fas fa-users mr-2 text-gray-500"></i>
+                            <span>整理・活用 (全員)</span>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <hr class="section-divider">
+
+        <section id="step1" class="mb-12 p-6 main-content-card">
+            <h2 class="section-title"><span class="text-gray-400 mr-2">C.</span>STEP 1: 移行先の共有ドライブ構成を理解する</h2>
+            <p class="mb-4 text-gray-600"><span class="icon-key-accent">このステップは主に管理者による準備と、ユーザーへの事前説明を含みます。</span></p>
+            <p class="mb-6 text-gray-700">管理者が共有ドライブを作成し、必要なメンバー（Googleグループまたは個人）を追加、適切な権限を付与します。皆様は、以下のフォルダ構成と、ご自身の作業場所を把握してください。</p>
+
+            <h3 class="subsection-title"><i class="fas fa-folder-tree mr-2 accent-primary-text"></i>共有ドライブの主なフォルダ構成（例）:</h3>
+            <div class="space-y-4 mb-6">
+                <div class="p-4 border rounded-lg accent-primary-light-bg accent-primary-border">
+                    <p class="font-semibold text-lg accent-primary-dark-text"><span class="icon-folder">データ移行用フォルダ</span></p>
+                    <ul class="list-disc list-inside ml-4 mt-2 accent-primary-darker-text space-y-1"> <li><strong>役割</strong>: マイドライブからのデータ移動先（一時保管場所）。</li>
+                        <li><strong>構造</strong>: このフォルダの中に、各ユーザーの「<strong class="accent-primary-darker-text">（ご自身の名前）フォルダ</strong>」が作成されています。</li> <li><strong>アクション</strong>: ご自身のマイドライブのファイルを、まずこの「<strong class="accent-primary-darker-text">（ご自身の名前）フォルダ</strong>」へ移動します。</li>
+                    </ul>
+                </div>
+                <div class="p-4 border rounded-lg bg-gray-50 border-gray-300"> <p class="font-semibold text-lg text-gray-700"><span class="icon-folder">プロジェクト</span></p>
+                    <ul class="list-disc list-inside ml-4 mt-2 text-gray-800"> <li><strong>役割</strong>: 各プロジェクトの業務ファイルを最終的に保管する場所。</li>
+                    </ul>
+                </div>
+                <div class="p-4 border rounded-lg bg-gray-50 border-gray-300">
+                    <p class="font-semibold text-lg text-gray-700"><span class="icon-folder">全社共有</span></p>
+                    <ul class="list-disc list-inside ml-4 mt-2 text-gray-800 space-y-1">
+                        <li><strong>役割</strong>: 組織メンバー全体で共有する共通データを保管する場所（旧140サーバーのような利用を想定）。</li>
+                        <li><strong class="text-danger-critical">原則、外部共有は行いません。</strong></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="point-box bg-gray-100 border-gray-400"> <h3 class="subsection-title text-gray-700"><i class="fas fa-user-shield mr-2"></i>権限について:</h3>
+                <p class="text-gray-800">皆さんは「<strong class="text-gray-900">コンテンツ管理者</strong>」の権限を持ち、ファイル・フォルダの追加、編集、削除、移動が可能です。</p> </div>
+        </section>
+
+        <hr class="section-divider">
+
+        <section id="step2" class="mb-12 p-6 main-content-card">
+            <h2 class="section-title"><span class="text-gray-400 mr-2">D.</span>STEP 2: データをマイドライブから共有ドライブへ移行する <span class="text-sm font-normal text-gray-500">(各ユーザー作業)</span></h2>
+            <p class="mb-6 text-gray-700">マイドライブ上で移行したいデータのオーナー権限を持つ方が、以下の手順で作業します。</p>
+
+            <ol class="list-none space-y-6">
+                <li class="flex">
+                    <span class="step-number">1</span>
+                    <div>
+                        <h4 class="font-semibold text-lg mb-1 text-gray-800">マイドライブを開く:</h4>
+                        <p class="text-gray-600">ご自身のマイドライブにアクセスしてください。</p>
+                    </div>
+                </li>
+                <li class="flex">
+                    <span class="step-number">2</span>
+                    <div>
+                        <h4 class="font-semibold text-lg mb-1 text-gray-800">移行するファイルを選択する:</h4>
+                        <ul class="list-disc list-inside text-gray-600 space-y-1">
+                            <li>共有ドライブへ移行したい業務ファイルがあるフォルダを開きます。</li>
+                            <li>そのフォルダ内にある<strong class="accent-primary-text">ファイルを選択</strong>します。（ShiftキーやCtrlキー/Cmdキーで複数選択可能です）</li>
+                            <li class="caution-box caution-box-critical mt-2"> <i class="fas fa-triangle-exclamation"></i><strong class="text-danger-critical">【重要】</strong>: マイドライブから<strong class="text-danger-critical">フォルダごと直接、共有ドライブへ移動することはできません。</strong>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="flex">
+                    <span class="step-number">3</span>
+                    <div>
+                        <h4 class="font-semibold text-lg mb-1 text-gray-800">指定の一時フォルダへファイルを移動する:</h4>
+                        <div class="p-4 bg-gray-100 rounded-lg border border-gray-300">
+                            <h5 class="font-semibold text-md mb-2 text-gray-700"><i class="fas fa-mouse-pointer mr-1"></i>主な方法：Webブラウザを使用</h5>
+                            <ol class="list-decimal list-inside text-gray-600 space-y-1">
+                                <li>選択したファイルを、共有ドライブ内の「<span class="folder-name">データ移行用フォルダ</span>」の中にある「<strong class="accent-primary-text">（ご自身の名前）フォルダ</strong>」へドラッグ＆ドロップで移動、またはファイルを右クリックして「移動」を選択し、表示されるダイアログで移動先を指定します。</li>
+                            </ol>
+                        </div>
+                        <div class="p-4 bg-gray-100 rounded-lg border border-gray-300 mt-4">
+                            <h5 class="font-semibold text-md mb-2 text-gray-700"><i class="fas fa-desktop mr-1"></i>（参考）PCアプリ (Google Drive for desktop) を使用する場合:</h5>
+                            <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                <li>PCのファイルエクスプローラー（Windows）やFinder（Mac）上で、マイドライブからファイルをコピーし、共有ドライブの指定フォルダへ貼り付ける方法もあります。</li>
+                                <li class="text-sm accent-primary-dark-text">この方法では、フォルダ構造を保ったままデータをコピーできるため便利ですが、元データは残ったままとなるため、取り扱いには注意が必要です。重要ファイルの移動は、Webブラウザからの操作を推奨します。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+            </ol>
+
+            <div class="mt-8">
+                <h3 class="subsection-title accent-secondary-text-critical"><i class="fas fa-info-circle mr-2"></i>【移行時の特記事項】</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="p-4 accent-primary-light-bg border accent-primary-border rounded-lg"> <h4 class="font-semibold accent-primary-dark-text mb-1">ファイルのオーナーが自分ではない / 退職者のデータ:</h4>
+                        <ul class="list-disc list-inside accent-primary-darker-text text-sm space-y-1"> <li>管理者に相談し、対応方針を決定してください。</li>
+                            <li>（参考）自身で「ファイルのコピーを保存する」方法もありますが、バージョン履歴は引き継がれません。</li>
+                        </ul>
+                    </div>
+                    <div class="p-4 accent-primary-light-bg border accent-primary-border rounded-lg">
+                        <h4 class="font-semibold accent-primary-dark-text mb-1">大量のファイル移行 / 手順不明時:</h4>
+                        <ul class="list-disc list-inside accent-primary-darker-text text-sm">
+                            <li>無理せず、事前に管理者に相談してください。</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="section-divider">
+
+        <section id="step3" class="mb-12 p-6 main-content-card">
+            <h2 class="section-title"><span class="text-gray-400 mr-2">E.</span>STEP 3: 共有ドライブ内で最終整理と最適化を行う <span class="text-sm font-normal text-gray-500">(全員で協力)</span></h2>
+            <p class="mb-6 text-gray-700">「データ移行用フォルダ」への一時的なデータ移行が完了したら、以下の作業に進みます。</p>
+
+            <ol class="list-none space-y-6">
+                <li class="flex">
+                    <span class="step-number">1</span>
+                    <div>
+                        <h4 class="font-semibold text-lg mb-1 text-gray-800">最終的な保管場所へ整理する:</h4>
+                        <p class="text-gray-600">「<span class="folder-name">データ移行用フォルダ</span>」内の「<span class="folder-name">（ご自身の名前）フォルダ</span>」にあるデータを、チームで定められた共有ドライブ内の<strong class="text-success">最終的な保管場所</strong>へ移動・整理します。</p>
+                        <ul class="list-disc list-inside text-sm text-gray-500 mt-1">
+                            <li>例: 「<span class="folder-name">プロジェクト</span>」フォルダ内の、該当するプロジェクト名フォルダ <span class="icon-arrow-right"></span> さらにその中の適切なサブフォルダへ。</li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="flex">
+                    <span class="step-number">2</span>
+                    <div>
+                        <h4 class="font-semibold text-lg mb-1 text-gray-800">不要なデータを削除する:</h4>
+                        <p class="text-gray-600">移行データを整理し、重複ファイルや不要になったファイルは削除してください。</p>
+                    </div>
+                </li>
+                <li class="flex">
+                    <span class="step-number">3</span>
+                    <div>
+                        <h4 class="font-semibold text-lg mb-1 text-gray-800">アクセスを便利にする (推奨):</h4>
+                        <p class="text-gray-600">共有ドライブ内のよく使うフォルダやファイルへの「<strong class="accent-primary-text">ショートカット</strong>」を、ご自身のマイドライブに作成すると、素早くアクセスできて便利です。</p>
+                    </div>
+                </li>
+            </ol>
+        </section>
+
+        <hr class="section-divider">
+
+        <section id="補足情報" class="p-6 main-content-card">
+            <h2 class="section-title"><span class="text-gray-400 mr-2">F.</span>補足情報：移行後のファイルURLとアクセス権</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="point-box bg-gray-100 border-gray-400">
+                    <h3 class="subsection-title text-gray-700"><i class="fas fa-link mr-2"></i>ファイルURL（リンク）:</h3>
+                    <p class="text-gray-800">マイドライブから共有ドライブへファイルを移動しても、ファイルの基本的な<strong class="text-gray-900">URLは変更されません。</strong></p>
+                </div>
+                <div class="point-box bg-gray-100 border-gray-400">
+                    <h3 class="subsection-title text-gray-700"><i class="fas fa-user-lock mr-2"></i>アクセス権:</h3>
+                    <p class="text-gray-800 mb-2">ファイルのオーナーが「個人」から「組織（共有ドライブ）」に変わるため、<strong class="text-gray-900">アクセス権は共有ドライブの設定が優先</strong>されます。</p>
+                    <p class="text-gray-800 mb-2">以前マイドライブで共有していたリンクのアクセス可否は、移行後の共有ドライブの設定に依存します。</p>
+                    <div class="caution-box mt-2">
+                        <p class="accent-primary-dark-text font-semibold"><i class="fas fa-triangle-exclamation accent-primary-text"></i>【重要】: 特に重要な共有リンクは、移行後に必ず動作確認を行い、必要に応じて共有設定を再調整してください。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center mt-12 py-8 border-t border-gray-300">
+            <p class="text-sm text-gray-500">&copy; <span id="currentYear"></span> Your Company Name. All rights reserved.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // Set current year in footer
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>
