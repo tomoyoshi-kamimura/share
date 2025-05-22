@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Workspace 共有ドライブ移行ガイド</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Visualization & Content Choices: 
+        - Introduction (I): Static text. Goal: Inform. Method: HTML text. Interaction: None.
+        - Employee Guide (II):
+            - A. なぜ共有ドライブなのか？: Text. Goal: Inform. Method: HTML text.
+            - B. 移行前の準備: Interactive checklist. Goal: Organize/Guide. Method: HTML list + JS for interactivity. Interaction: Click to toggle completion.
+            - C. ステップ・バイ・ステップ: Numbered lists. Goal: Guide. Method: HTML ordered list.
+            - D. 移行中および移行後の重要事項とトラブルシューティング: Accordion list. Goal: Inform/Organize. Method: HTML structure + JS for accordion. Interaction: Click to expand/collapse.
+        - Admin Guide (III):
+            - A. 管理コンソールの必須準備項目: Bulleted lists, highlighted text. Goal: Guide/Inform. Method: HTML lists.
+            - B. 効果的な共有ドライブ構造の設計: Text, HTML/CSS for simple folder structure example (using Unicode icons). Goal: Inform/Organize. Method: HTML lists and styled divs.
+            - C. 共有ドライブのアクセス権限の習熟: HTML table. Goal: Inform/Compare. Method: HTML table.
+            - D. Googleグループによるアクセス管理の効率化: Bulleted lists, accordion for model cases. Goal: Guide/Inform. Method: HTML lists + JS for accordion.
+            - E. (オプション) 管理者によるフォルダ移行支援: Text. Goal: Inform.
+        - Conclusion (IV): Static text, bulleted lists. Goal: Summarize. Method: HTML text and lists.
+        No complex data charts are present in the source; the permissions table is the main visual data representation. Chart.js is included for compliance but not actively used for charts in this specific SPA. NO SVG/Mermaid used.
+    -->
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #FDFCFB; /* Very light cream */
+            color: #4A4A4A; /* Dark grey */
+        }
+        .tab-button {
+            transition: all 0.3s ease;
+            border-bottom-width: 3px;
+            border-color: transparent;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+        .tab-button.active {
+            border-color: #5DA9E9; /* Soft, friendly blue */
+            color: #5DA9E9;
+            font-weight: 600;
+        }
+        .page-section-content { /* Renamed from tab-content to avoid conflict */
+            display: none;
+        }
+        .page-section-content.active {
+            display: block;
+        }
+        .content-card {
+            background-color: #FFFFFF; /* White */
+            border-radius: 0.75rem; /* 12px */
+            box-shadow: 0 4px 12px -1px rgba(0, 0, 0, 0.07), 0 2px 8px -1px rgba(0, 0, 0, 0.04);
+            margin-bottom: 1.5rem; /* 24px */
+            padding: 1.5rem; /* 24px */
+        }
+        .content-card h1, .content-card h2 { /* For main section titles */
+            color: #4A4A4A;
+            font-size: 1.75rem; /* 28px */
+            font-weight: 700;
+            margin-bottom: 1.5rem; /* 24px */
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #A1C9F1;
+        }
+         .content-card h3 { /* For sub-section titles within tabs */
+            color: #5DA9E9; /* Soft, friendly blue */
+            font-size: 1.5rem; /* 24px */
+            font-weight: 700;
+            margin-bottom: 1rem; /* 16px */
+        }
+        .content-card h4 {
+            color: #4A4A4A;
+            font-size: 1.25rem; /* 20px */
+            font-weight: 600;
+            margin-top: 1.5rem; /* 24px */
+            margin-bottom: 0.75rem; /* 12px */
+        }
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 0.5rem;
+            cursor: pointer;
+            border-bottom: 1px solid #EBF4FA; /* Lighter blue border */
+            transition: background-color 0.2s;
+        }
+        .checklist-item:hover {
+            background-color: #F7FAFC;
+        }
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+        .checklist-item .icon {
+            margin-right: 0.75rem;
+            color: #A1C9F1; /* Light blue for unchecked */
+            font-size: 1.25rem;
+        }
+        .checklist-item.completed .icon {
+            color: #5DA9E9; /* Darker blue for checked */
+        }
+        .checklist-item.completed .text-content {
+            text-decoration: line-through;
+            color: #77838F;
+        }
+        .permission-table th, .permission-table td {
+            border: 1px solid #A1C9F1; /* Lighter blue border */
+            padding: 0.75rem;
+            text-align: center;
+            font-size: 0.875rem; /* 14px */
+            vertical-align: middle;
+        }
+        .permission-table th {
+            background-color: #EBF4FA; /* Very light blue */
+            font-weight: 600;
+            color: #4A5568;
+        }
+        .permission-table td.check {
+            color: #5DA9E9; /* Soft, friendly blue for checkmark */
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+        .accordion-button {
+            background-color: #EBF4FA;
+            color: #4A4A4A;
+            cursor: pointer;
+            padding: 1rem 1.25rem;
+            width: 100%;
+            text-align: left;
+            border: none;
+            border-bottom: 1px solid #A1C9F1;
+            outline: none;
+            transition: background-color 0.3s ease;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 0.375rem 0.375rem 0 0; /* Rounded top corners */
+        }
+        .accordion-button:hover {
+            background-color: #DCECF6;
+        }
+        .accordion-button.active { /* Style for when accordion is open */
+             border-bottom: 1px solid #5DA9E9;
+        }
+        .accordion-button .plus-minus {
+            font-size: 1.25rem;
+            color: #5DA9E9;
+            transition: transform 0.3s ease;
+        }
+        .accordion-button.active .plus-minus {
+            transform: rotate(45deg);
+        }
+        .accordion-content {
+            padding: 0 1.25rem;
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+            border-left: 1px solid #A1C9F1;
+            border-right: 1px solid #A1C9F1;
+            border-bottom: 1px solid #A1C9F1;
+            border-radius: 0 0 0.375rem 0.375rem; /* Rounded bottom corners */
+        }
+        .accordion-content div { /* Inner div for content padding */
+            padding: 1.25rem 0;
+        }
+        .nav-link {
+            padding: 0.75rem 1.25rem;
+            margin: 0 0.25rem;
+            border-radius: 0.375rem; /* 6px */
+            transition: background-color 0.3s ease, color 0.3s ease;
+            color: #FFFFFF;
+            font-weight: 500;
+        }
+        .nav-link:hover {
+            background-color: #A1C9F1; /* Lighter blue */
+            color: #2D3748; /* Darker text on hover */
+        }
+        .nav-link.active {
+            background-color: #F5B971; /* Soft orange/amber for active nav */
+            color: #FFFFFF;
+            font-weight: 700;
+        }
+        .structure-example ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .structure-example li {
+            position: relative;
+            padding: 0.25rem 0 0.25rem 2rem; /* Space for icon */
+            margin-bottom: 0.25rem;
+            border-left: 2px solid #EBF4FA;
+        }
+         .structure-example li:last-child {
+            border-left: 2px solid transparent; /* No line for the last item in a level */
+        }
+        .structure-example li::before {
+            content: '📁'; /* Folder icon */
+            position: absolute;
+            left: 0.5rem;
+            top: 0.25rem;
+            color: #5DA9E9;
+        }
+        .structure-example li.file::before {
+            content: '📄'; /* File icon */
+        }
+        .note-box {
+            background-color: #FFFBEB; /* Light yellow */
+            border-left: 4px solid #F5B971; /* Amber */
+            padding: 1rem;
+            margin: 1rem 0;
+            color: #744210; /* Brownish text */
+            font-size: 0.9rem;
+        }
+        .note-box strong {
+            color: #B7791F;
+        }
+        .list-disc { margin-left: 1.5em; }
+        .list-decimal { margin-left: 1.5em; }
+
+        /* Sticky Nav */
+        .sticky-nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background-color: #5DA9E9; /* Soft, friendly blue */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        /* Tab container styling */
+        .tab-container {
+            border-bottom: 2px solid #E2E8F0; /* Light gray border */
+            margin-bottom: 1.5rem; /* 24px */
+        }
+    </style>
+</head>
+<body class="leading-relaxed">
+
+    <nav class="sticky-nav">
+        <div class="container mx-auto flex flex-wrap justify-center items-center p-3 md:p-4">
+            <a href="#intro-section" class="nav-link active">I. はじめに</a>
+            <a href="#employee-guide-section" class="nav-link">II. 従業員向け</a>
+            <a href="#admin-guide-section" class="nav-link">III. 管理者向け</a>
+            <a href="#conclusion-section" class="nav-link">IV. まとめ</a>
+        </div>
+    </nav>
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <section id="intro-section" class="page-main-section">
+            <div class="content-card">
+                <h1>I. はじめに: Google Workspace 共有ドライブへの移行</h1>
+                <p class="mb-4">無料版GoogleアカウントからGoogle Workspace Business Standardへの移行は、特に10人規模の企業にとって、データ管理と協調作業の質を大きく向上させる機会となります。この移行の中核をなすのが、個人のマイドライブから組織の共有ドライブへのデータ移行です。</p>
+                
+                <h4>共有ドライブの概要</h4>
+                <p class="mb-2">共有ドライブは、マイドライブとは根本的に異なる概念に基づいています。マイドライブ内のファイルは基本的に個人に帰属しますが、共有ドライブ内のファイルはチームまたは組織全体に帰属します。この変更は、単なる技術的な移行ではなく、データの所有権に関する意識の変革を伴います。ファイルが個人ではなく組織に帰属することで、従業員の退職時にもファイルが失われることなく、業務継続性が確保されます。</p>
+                <p class="font-semibold text-[#5DA9E9] mb-2">10人規模の企業にとっての主な利点:</p>
+                <ul class="list-disc list-inside mb-4 pl-4 space-y-1">
+                    <li>一元化されたファイル管理</li>
+                    <li>コラボレーションの向上</li>
+                    <li>データセキュリティと統制の強化</li>
+                    <li>事業継続性の確保</li>
+                </ul>
+
+                <h4>本ガイドの目的</h4>
+                <p>本ガイドは、従業員が個人のマイドライブから新しい会社の共有ドライブへ業務ファイルをスムーズに移行するための具体的な手順を提供するとともに、管理者がこの移行を円滑に進め、継続的なベストプラクティスを確立するための初期設定について解説することを目的としています。この移行は「データの断捨離」とも言えるプロセスであり、新しい共有ドライブ環境をクリーンに保つために重要です。</p>
+            </div>
+        </section>
+
+        <section id="employee-guide-section" class="page-main-section">
+            <div class="content-card">
+                <h2>II. 従業員向けガイド: マイドライブから共有ドライブへのファイル移行</h2>
+                <div class="tab-container flex flex-wrap justify-center sm:justify-start">
+                    <button class="tab-button employee-tab py-2 px-4 mr-1 sm:mr-2 active" onclick="openSubSection('employee', 'employee-why-shared-drive', this)">A. 共有ドライブとは？</button>
+                    <button class="tab-button employee-tab py-2 px-4 mr-1 sm:mr-2" onclick="openSubSection('employee', 'employee-preparation', this)">B. 移行前の準備</button>
+                    <button class="tab-button employee-tab py-2 px-4 mr-1 sm:mr-2" onclick="openSubSection('employee', 'employee-migration-steps', this)">C. 移行手順</button>
+                    <button class="tab-button employee-tab py-2 px-4" onclick="openSubSection('employee', 'employee-important-notes', this)">D. 重要事項・トラブルシューティング</button>
+                </div>
+
+                <div id="employee-why-shared-drive" class="page-section-content employee-content active">
+                    <h3>A. なぜ共有ドライブなのか？ マイドライブとの違いを理解する</h3>
+                    <p>共有ドライブの最も大きな特徴は、保存されているファイルが「チームの所有物」になるという点です。これにより、必要なメンバー全員が情報にアクセスでき、誰かがチームを離れた場合でもファイルが失われることはありません。</p>
+                    <p class="mt-2">新しいGoogle Workspaceアカウントにもマイドライブは存在しますが、これは主に個人用の作業ファイルや、会社として共有する必要のない個人的なメモなどに使用することが推奨されます。会社の公式な業務ファイルは、原則として共有ドライブで管理することになります。この区別を理解することが、新しい働き方への第一歩です。</p>
+                </div>
+
+                <div id="employee-preparation" class="page-section-content employee-content">
+                    <h3>B. 移行前の準備: マイドライブを整理整頓する</h3>
+                    <p class="mb-4">スムーズなデータ移行のためには、事前の準備が不可欠です。以下のステップに従って、マイドライブを整理しましょう。</p>
+                    <div id="employee-prep-checklist" class="border border-gray-200 rounded-md">
+                        <div class="checklist-item" onclick="toggleChecklistItem(this)">
+                            <span class="icon">◻️</span>
+                            <span class="text-content">ステップ1: 業務ファイルの特定 (マイドライブ内の業務関連ファイル・フォルダを全て特定)</span>
+                        </div>
+                        <div class="checklist-item" onclick="toggleChecklistItem(this)">
+                            <span class="icon">◻️</span>
+                            <span class="text-content">ステップ2: 整理と断捨離 (「移行対象」フォルダ作成、個人ファイル分離、不要ファイル削除)</span>
+                        </div>
+                        <div class="checklist-item" onclick="toggleChecklistItem(this)">
+                            <span class="icon">◻️</span>
+                            <span class="text-content">ステップ3: ファイルオーナーシップの確認（参考情報） (共有ドライブへの移動でオーナーシップが組織に移管されることを理解)</span>
+                        </div>
+                    </div>
+                    <p class="mt-3 text-sm text-gray-600">項目をクリックして進捗を管理できます。</p>
+                </div>
+
+                <div id="employee-migration-steps" class="page-section-content employee-content">
+                    <h3>C. ステップ・バイ・ステップ: マイドライブから共有ドライブへファイルを移動する</h3>
+                    <p class="mb-2">新しいGoogle Workspaceアカウントが有効になったら、以下の手順でファイルを移行します。</p>
+                    <h4>共有ドライブへのアクセスと必要な権限</h4>
+                    <p class="mb-2">Googleドライブ左側ナビゲーションに「共有ドライブ」が表示されます。ファイル移動には通常「投稿者」以上の権限が必要です。不明な場合は管理者に確認してください。</p>
+                    
+                    <h4>方法1: ドラッグ＆ドロップ (推奨)</h4>
+                    <ol class="list-decimal list-inside mb-4 pl-4 space-y-1">
+                        <li>新しいGoogle WorkspaceアカウントでGoogleドライブを開きます。</li>
+                        <li>マイドライブ内で、準備した「移行対象」フォルダ等を探します。</li>
+                        <li>移動したいファイルやフォルダを選択します。</li>
+                        <li>選択したアイテムを、左側ナビゲーションの目的の共有ドライブ名の上までドラッグ＆ドロップします。</li>
+                        <li>確認メッセージが表示されたら「移動」をクリックします。</li>
+                    </ol>
+
+                    <h4>方法2: 「移動」機能を使用</h4>
+                    <ol class="list-decimal list-inside mb-4 pl-4 space-y-1">
+                        <li>マイドライブ内で移動したいファイルやフォルダを選択します。</li>
+                        <li>右クリックし、「（指定の場所に）移動」を選択します。</li>
+                        <li>ポップアップで目的の共有ドライブを選択し、「移動」をクリックします。</li>
+                    </ol>
+                    <p>どちらの方法でも複数ファイル/フォルダを一度に移動できます。</p>
+                </div>
+
+                <div id="employee-important-notes" class="page-section-content employee-content">
+                    <h3>D. 移行中および移行後の重要事項とトラブルシューティング</h3>
+                    <div class="accordion-container space-y-2">
+                        <div>
+                            <button class="accordion-button">オーナーシップの移管 <span class="plus-minus">+</span></button>
+                            <div class="accordion-content">
+                                <div><strong>最重要ポイント:</strong> ファイルを共有ドライブに移動すると、オーナーシップは個人から会社（共有ドライブ自体）に移管されます。これにより、従業員退職後もファイルは組織に残ります。</div>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="accordion-button">既存の共有設定への影響 <span class="plus-minus">+</span></button>
+                            <div class="accordion-content">
+                                <div>ファイルアクセス権は基本的に共有ドライブの設定が優先されます。マイドライブで外部共有していても、共有ドライブが許可していなければアクセス不可になる可能性があります。移行前にファイルに直接設定されていた共有相手は維持されますが、共有ドライブの設定がより制限的な場合は変更されることがあります。重要な共有設定は移行後に確認してください。</div>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="accordion-button">ファイルが移動できない主な理由 <span class="plus-minus">+</span></button>
+                            <div class="accordion-content">
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li><strong>外部オーナーのファイル:</strong> 組織外ユーザーがオーナーのファイルは直接移動不可。オーナーに移管依頼または管理者に相談。</li>
+                                    <li><strong>権限不足:</strong> 移動先の共有ドライブに「投稿者」以上の権限がない。</li>
+                                    <li><strong>アイテム数の上限:</strong> 共有ドライブ毎に上限あり (例: 50万アイテム)。</li>
+                                    <li><strong>一度に移動するアイテム数:</strong> 大量 (例: 10万以上) の場合は分割して移動。</li>
+                                    <li><strong>特殊なファイル:</strong> Googleフォーム、サイト、マクロ等は移行後の動作確認が必要。問題時は管理者に相談。</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="accordion-button">問題が発生した場合の対処法 <span class="plus-minus">+</span></button>
+                            <div class="accordion-content">
+                                <div>まず、移動先の共有ドライブの権限を確認。少量ファイルでテスト移動。解決しない場合は管理者に支援を依頼。</div>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="accordion-button">移行の確認 <span class="plus-minus">+</span></button>
+                            <div class="accordion-content">
+                                <div>ファイル移動後は必ず共有ドライブを開き、ファイルが正しく移動されているか、内容が問題ないかを確認してください。</div>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="accordion-button">マイドライブのクリーンアップ（移行後） <span class="plus-minus">+</span></button>
+                            <div class="accordion-content">
+                                <div>必要な業務ファイルがすべて共有ドライブに正常に移行・アクセスできることを確認後、マイドライブ内の移行対象フォルダや元ファイルを削除検討（確認完了後に！）。</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="admin-guide-section" class="page-main-section">
+            <div class="content-card">
+                 <h2>III. 管理者向けガイド: スムーズな移行のための初期設定</h2>
+                <div class="tab-container flex flex-wrap justify-center sm:justify-start">
+                    <button class="tab-button admin-tab py-2 px-4 mr-1 sm:mr-2 active" onclick="openSubSection('admin', 'admin-console-prep', this)">A. 管理コンソールの準備</button>
+                    <button class="tab-button admin-tab py-2 px-4 mr-1 sm:mr-2" onclick="openSubSection('admin', 'admin-drive-structure', this)">B. 共有ドライブ構造設計</button>
+                    <button class="tab-button admin-tab py-2 px-4 mr-1 sm:mr-2" onclick="openSubSection('admin', 'admin-permissions', this)">C. アクセス権限</button>
+                    <button class="tab-button admin-tab py-2 px-4 mr-1 sm:mr-2" onclick="openSubSection('admin', 'admin-google-groups', this)">D. Googleグループ活用</button>
+                    <button class="tab-button admin-tab py-2 px-4" onclick="openSubSection('admin', 'admin-migration-support', this)">E. フォルダ移行支援</button>
+                </div>
+
+                <div id="admin-console-prep" class="page-section-content admin-content active">
+                    <h3>A. 管理コンソールの必須準備項目</h3>
+                    <h4>ユーザーによる共有ドライブへのファイル移行許可</h4>
+                    <p class="mb-2">デフォルトでユーザーがマイドライブから共有ドライブへファイルを移動できない場合があるため、設定を確認・有効化します。手順: 管理コンソール > [アプリ] > [Google Workspace] > [ドライブとドキュメント] > [移行設定] > [ユーザーに共有ドライブへのファイルの移行を許可する] をオン。</p>
+                    
+                    <h4>共有ドライブ作成権限の管理</h4>
+                    <p class="mb-2">誰が新しい共有ドライブを作成できるかを決定します。初期は管理者が一元管理し、構造を確立後、必要に応じて権限を委譲。手順: 管理コンソール > [アプリ] > [Google Workspace] > [ドライブとドキュメント] > [共有設定] > [共有ドライブの作成]。</p>
+
+                    <h4>共有ドライブのデフォルト設定（組織レベル）</h4>
+                    <p class="mb-2">新しく作成される共有ドライブのデフォルト共有オプションを設定します（管理コンソール > [アプリ] > [Google Workspace] > [ドライブとドキュメント] > [共有設定]）。</p>
+                    <ul class="list-disc list-inside pl-4 space-y-1 mb-3">
+                        <li><strong>組織外メンバーの追加:</strong> 必要に応じて許可できる余地を残す。</li>
+                        <li><strong>メンバー以外のファイルアクセス:</strong> 通常は制限。</li>
+                        <li><strong>閲覧者/コメント可によるダウンロード等:</strong> 通常許可、機密情報ドライブでは制限検討。</li>
+                    </ul>
+                     <div class="note-box">
+                        <strong>10人規模の会社への推奨:</strong> 特定ドライブでの外部共有は許可、全社デフォルトは不許可または承認必須。メンバー以外のアクセスは不許可。閲覧者等のダウンロード等は許可し、機密ドライブでは個別制限。
+                    </div>
+                </div>
+
+                <div id="admin-drive-structure" class="page-section-content admin-content">
+                    <h3>B. 効果的な共有ドライブ構造の設計</h3>
+                    <h4>優れた構造の原則</h4>
+                    <p class="mb-2">シンプルで直感的、3～4階層程度が目安。プロジェクト別、部門別、クライアント別など分かりやすい分類で構成。</p>
+                    <p class="font-semibold text-[#5DA9E9] mb-1">10人規模の会社の例:</p>
+                    <div class="structure-example p-3 bg-gray-50 rounded my-3 border border-gray-200">
+                        <ul>
+                            <li>全社共通
+                                <ul class="ml-4">
+                                    <li class="file">規定.pdf</li>
+                                    <li class="file">テンプレート集</li>
+                                </ul>
+                            </li>
+                            <li>プロジェクト
+                                <ul class="ml-4">
+                                    <li>プロジェクトA</li>
+                                    <li>プロジェクトB</li>
+                                </ul>
+                            </li>
+                            <li>顧客 (該当する場合)
+                                <ul class="ml-4">
+                                    <li>顧客X</li>
+                                </ul>
+                            </li>
+                            <li>部門 (例: 営業、業務)</li>
+                            <li>アーカイブ</li>
+                        </ul>
+                    </div>
+                    <h4 class="mt-4">命名規則</h4>
+                    <p class="mb-2">共有ドライブおよび最上位フォルダには明確で一貫性のある命名規則を。例: `プロジェクト - [プロジェクト名]`。ステータス接頭辞も有効 (例: `[アーカイブ済み]`)。</p>
+                    <h4>権限セットの混在を避ける</h4>
+                    <p>フォルダごとに大幅に異なる権限が必要な場合は、別々の共有ドライブ作成を検討し、権限管理を簡素化。</p>
+                </div>
+
+                <div id="admin-permissions" class="page-section-content admin-content">
+                    <h3>C. 共有ドライブのアクセス権限の習熟</h3>
+                    <p class="mb-2">共有ドライブには5つのアクセスレベルがあります: 管理者、コンテンツ管理者、投稿者、閲覧者（コメント可）、閲覧者。</p>
+                    <h4 class="text-center my-4">重要表: 共有ドライブのアクセスレベルと対応する操作</h4>
+                    <div class="overflow-x-auto shadow-sm rounded-lg">
+                        <table class="permission-table w-full min-w-[800px]">
+                            <thead>
+                                <tr>
+                                    <th>権限</th>
+                                    <th>管理者</th>
+                                    <th>コンテンツ管理者</th>
+                                    <th>投稿者</th>
+                                    <th>閲覧者（コメント可）</th>
+                                    <th>閲覧者</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr> <td>ファイルやフォルダを閲覧する</td> <td class="check">✔</td> <td class="check">✔</td> <td class="check">✔</td> <td class="check">✔</td> <td class="check">✔</td> </tr>
+                                <tr> <td>ファイルにコメントする</td> <td class="check">✔</td> <td class="check">✔</td> <td class="check">✔</td> <td class="check">✔</td> <td></td> </tr>
+                                <tr> <td>ファイルを編集する</td> <td class="check">✔</td> <td class="check">✔</td> <td class="check">✔</td> <td></td> <td></td> </tr>
+                                <tr> <td>ファイルを作成・追加、フォルダ作成</td> <td class="check">✔</td> <td class="check">✔</td> <td class="check">✔*</td> <td></td> <td></td> </tr>
+                                <tr> <td>特定のファイルにユーザー/グループを追加・削除</td> <td class="check">✔</td> <td class="check">✔</td> <td class="check">✔</td> <td></td> <td></td> </tr>
+                                <tr> <td>ゴミ箱からファイルを復元 (30日以内)</td> <td class="check">✔</td> <td class="check">✔</td> <td class="check">✔</td> <td></td> <td></td> </tr>
+                                <tr> <td>ファイルをマイドライブから共有ドライブに移動</td> <td class="check">✔</td> <td class="check">✔</td> <td class="check">✔</td> <td></td> <td></td> </tr>
+                                <tr> <td>ファイルやフォルダをゴミ箱に移動</td> <td class="check">✔</td> <td class="check">✔</td> <td></td> <td></td> <td></td> </tr>
+                                <tr> <td>共有ドライブ内でファイルやフォルダを移動</td> <td class="check">✔</td> <td class="check">✔</td> <td></td> <td></td> <td></td> </tr>
+                                <tr> <td>共有ドライブ内の特定のフォルダにユーザー/グループを追加・削除</td> <td class="check">✔</td> <td class="check">✔**</td> <td></td> <td></td> <td></td> </tr>
+                                <tr> <td>フォルダをマイドライブから共有ドライブに移動</td> <td class="check">✔</td> <td></td> <td></td> <td></td> <td></td> </tr>
+                                <tr> <td>共有ドライブのファイルを別共有ドライブに移動</td> <td class="check">✔</td> <td></td> <td></td> <td></td> <td></td> </tr>
+                                <tr> <td>共有ドライブのメンバーを追加・削除</td> <td class="check">✔</td> <td></td> <td></td> <td></td> <td></td> </tr>
+                                <tr> <td>メンバーのアクセスレベルを変更</td> <td class="check">✔</td> <td></td> <td></td> <td></td> <td></td> </tr>
+                                <tr> <td>ゴミ箱のファイルを完全に削除</td> <td class="check">✔</td> <td></td> <td></td> <td></td> <td></td> </tr>
+                                <tr> <td>名前またはテーマを変更</td> <td class="check">✔</td> <td></td> <td></td> <td></td> <td></td> </tr>
+                                <tr> <td>共有ドライブを削除</td> <td class="check">✔</td> <td></td> <td></td> <td></td> <td></td> </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-xs mt-2 text-gray-600">* パソコン版Googleドライブ等では「投稿者」は読み取りのみ。編集等には「コンテンツ管理者」以上が必要。</p>
+                    <p class="text-xs mt-1 text-gray-600">** 管理者は「コンテンツ管理者」のフォルダ共有を制限可能。</p>
+                    
+                    <h4 class="mt-4">小規模ビジネスにおける推奨デフォルト共有ポリシー</h4>
+                    <ul class="list-disc list-inside pl-4 space-y-1">
+                        <li><strong>内部共有:</strong> チーム用共有ドライブメンバーは「コンテンツ管理者」または「投稿者」。</li>
+                        <li><strong>外部共有:</strong> 相手には「閲覧者」または「閲覧者（コメント可）」が基本。ファイル追加が必要なら「投稿者」。ドライブ毎に外部共有可否を制御。</li>
+                        <li><strong>最小権限の原則:</strong> 必要な最小限の権限のみ付与。「管理者」権限は限定的に。</li>
+                    </ul>
+                </div>
+
+                <div id="admin-google-groups" class="page-section-content admin-content">
+                    <h3>D. Googleグループによるアクセス管理の効率化</h3>
+                    <p class="mb-2">10人程度のチームでもGoogleグループ利用は長期的なメリットがあります。</p>
+                    <p class="font-semibold text-[#5DA9E9] mb-1">メリット:</p>
+                    <ul class="list-disc list-inside mb-4 pl-4 space-y-1">
+                        <li>管理の簡素化 (グループへの追加・削除で複数ドライブの権限を一括更新)</li>
+                        <li>拡張性</li>
+                        <li>透明性 (誰がアクセス権を持つか明確化)</li>
+                    </ul>
+                    <h4>必須Googleグループの作成例 (10人規模)</h4>
+                    <ul class="list-disc list-inside mb-2 pl-4 space-y-1">
+                        <li>`all-staff@yourcompany.com` (全従業員)</li>
+                        <li>`project-alpha-team@yourcompany.com` (プロジェクトAlphaメンバー)</li>
+                        <li>`sales-team@yourcompany.com` (営業チームなど)</li>
+                    </ul>
+                     <p class="mb-2">グループ作成は管理コンソール > [ディレクトリ] > [グループ] > [グループを作成]。</p>
+                    <h4>Googleグループの共有ドライブへの割り当て</h4>
+                    <p class="mb-2">共有ドライブ作成後、個々のユーザーの代わりにGoogleグループをメンバーとして追加し、適切なアクセスレベルを選択。</p>
+                    
+                    <h4 class="mt-4">モデルケース: 10人規模の会社における実践的な権限設定</h4>
+                    <div class="accordion-container space-y-2">
+                        <div>
+                            <button class="accordion-button">共有ドライブ: `全社共通` <span class="plus-minus">+</span></button>
+                            <div class="accordion-content">
+                                <div>
+                                    <ul class="list-disc list-inside space-y-1">
+                                        <li>グループ: `all-staff@yourcompany.com` – アクセスレベル: `閲覧者（コメント可）` または `投稿者`</li>
+                                        <li>個人: 管理者 – アクセスレベル: `管理者`</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="accordion-button">共有ドライブ: `プロジェクトAlpha` <span class="plus-minus">+</span></button>
+                            <div class="accordion-content">
+                                <div>
+                                    <ul class="list-disc list-inside space-y-1">
+                                        <li>グループ: `project-alpha-team@yourcompany.com` – アクセスレベル: `コンテンツ管理者`</li>
+                                        <li>グループ: `all-staff@yourcompany.com` – アクセスレベル: `閲覧者` (進捗閲覧のみの場合)</li>
+                                        <li>個人: プロジェクトリーダー – アクセスレベル: `管理者` または `コンテンツ管理者`</li>
+                                        <li>個人: 管理者 – アクセスレベル: `管理者`</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="accordion-button">共有ドライブ: `顧客X関連文書` (外部共有) <span class="plus-minus">+</span></button>
+                            <div class="accordion-content">
+                                <div>
+                                    <ul class="list-disc list-inside space-y-1">
+                                        <li>グループ: 社内チームメンバー – アクセスレベル: `コンテンツ管理者`</li>
+                                        <li>個人: 顧客X担当者 (外部) – アクセスレベル: `投稿者` または `閲覧者（コメント可）`</li>
+                                        <li>個人: 管理者 – アクセスレベル: `管理者`</li>
+                                    </ul>
+                                    <p class="mt-1 text-sm"><strong>管理者設定:</strong> このドライブが外部共有を許可するように設定されているか確認。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+                <div id="admin-migration-support" class="page-section-content admin-content">
+                    <h3>E. (オプション) 管理者によるフォルダ移行支援</h3>
+                    <h4>必要な場合</h4>
+                     <ul class="list-disc list-inside mb-2 pl-4 space-y-1">
+                        <li>ユーザーが大規模/複雑なフォルダ構造の移動に苦労している。</li>
+                        <li>元従業員オーナーのファイルが多数ある (旧システム移行時など)。</li>
+                        <li>所有権が混在したファイルを含むフォルダがある。</li>
+                    </ul>
+                    <h4>管理者の権限と手順</h4>
+                    <p>適切な権限を持つ管理者は、ユーザーのマイドライブから共有ドライブへフォルダを移動できます。管理者が対象共有ドライブに「管理者」権限、移動対象フォルダに「閲覧者」アクセス権が必要。管理者がdrive.google.comにログインし、対象フォルダを目的の共有ドライブにドラッグ。</p>
+                    <p class="mt-2 text-sm">これは主にユーザーへのサポートオプションです。</p>
+                </div>
+            </div>
+            <div class="content-card mt-6 text-center text-gray-700">
+                <p>管理者は技術設定だけでなく、新しい構造やルールをチームに説明し、理解を促す「ファシリテーター兼教育者」の役割も重要です。</p>
+            </div>
+        </section>
+
+        <section id="conclusion-section" class="page-main-section">
+            <div class="content-card">
+                <h1>IV. まとめ: 成功裏かつ整理されたデジタルワークスペースの実現に向けて</h1>
+                <p class="mb-4">無料版GoogleアカウントからGoogle Workspaceの共有ドライブへの移行は、計画的に進めることで、企業のデータ管理と協調作業を飛躍的に向上させる機会となります。</p>
+                
+                <h4>主要なアクションの振り返り</h4>
+                <ul class="list-disc list-inside mb-4 pl-4 space-y-1">
+                    <li><strong>従業員:</strong> マイドライブ整理、業務ファイルの計画的移行、オーナーシップと共有設定変更点の理解。</li>
+                    <li><strong>管理者:</strong> 管理コンソール設定、効果的な共有ドライブ構造設計、Googleグループとアクセス権限設定、従業員指導。</li>
+                </ul>
+
+                <h4>移行後の整理された共有ドライブ環境維持のヒント</h4>
+                 <ul class="list-disc list-inside mb-4 pl-4 space-y-1">
+                    <li><strong>定期的な見直し:</strong> 共有ドライブ構造や権限設定を定期的 (年1回等) に見直し。</li>
+                    <li><strong>ユーザートレーニングとルールの徹底:</strong> 命名規則や保存場所を定期的に周知・徹底。</li>
+                    <li><strong>古いデータのアーカイブ:</strong> 完了プロジェクト等は「アーカイブ用」共有ドライブへ移動。</li>
+                    <li><strong>グループメンバーシップの管理:</strong> 従業員の異動に合わせて常に最新状態に。</li>
+                </ul>
+                <h4>最後に</h4>
+                <p>この移行を慎重かつ計画的に行うことで、貴社のコラボレーション能力とデータ管理体制は大幅に強化されるでしょう。本ガイドが、その一助となれば幸いです。</p>
+            </div>
+        </section>
+    </div>
+
+    <footer class="bg-[#4A4A4A] text-[#FDFCFB] text-center p-6 mt-12">
+        <p>&copy; Google Workspace 共有ドライブ移行ガイド (インタラクティブ版)</p>
+        <p class="text-sm opacity-75">このウェブマニュアルは情報提供を目的としています。</p>
+    </footer>
+
+    <script>
+        function openSubSection(type, sectionId, elmnt) {
+            let i, sectionContent, tabLinks;
+            sectionContent = document.getElementsByClassName(type + "-content");
+            for (i = 0; i < sectionContent.length; i++) {
+                sectionContent[i].style.display = "none";
+                sectionContent[i].classList.remove("active");
+            }
+            tabLinks = document.getElementsByClassName(type + "-tab");
+            for (i = 0; i < tabLinks.length; i++) {
+                tabLinks[i].classList.remove("active");
+            }
+            document.getElementById(sectionId).style.display = "block";
+            document.getElementById(sectionId).classList.add("active");
+            if (elmnt) { // Check if elmnt is provided (not null on initial load)
+              elmnt.classList.add("active");
+            }
+        }
+
+        document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    const navHeight = document.querySelector('nav.sticky-nav').offsetHeight;
+                    const elementPosition = targetElement.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - navHeight - 16; // 16px buffer
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: "smooth"
+                    });
+                    
+                    document.querySelectorAll('nav a.nav-link').forEach(link => link.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+        
+        const accordions = document.querySelectorAll(".accordion-button");
+        accordions.forEach(accordion => {
+            accordion.addEventListener("click", function() {
+                this.classList.toggle("active");
+                const content = this.nextElementSibling;
+                const plusMinus = this.querySelector(".plus-minus");
+                if (content.style.maxHeight) {
+                    content.style.maxHeight = null;
+                    if(plusMinus) plusMinus.textContent = "+";
+                } else {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                    if(plusMinus) plusMinus.textContent = "-";
+                }
+            });
+        });
+
+        function toggleChecklistItem(item) {
+            item.classList.toggle('completed');
+            const icon = item.querySelector('.icon');
+            if (item.classList.contains('completed')) {
+                icon.textContent = '✅';
+            } else {
+                icon.textContent = '◻️';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set default active tab for employee and admin sections
+            const defaultEmployeeTabButton = document.querySelector('.employee-tab.active');
+            if (defaultEmployeeTabButton) {
+                 openSubSection('employee', 'employee-why-shared-drive', defaultEmployeeTabButton);
+            } else { // Fallback if no tab is marked active in HTML
+                const firstEmployeeTab = document.querySelector('.employee-tab');
+                if(firstEmployeeTab) openSubSection('employee', 'employee-why-shared-drive', firstEmployeeTab);
+            }
+
+            const defaultAdminTabButton = document.querySelector('.admin-tab.active');
+            if (defaultAdminTabButton) {
+                openSubSection('admin', 'admin-console-prep', defaultAdminTabButton);
+            } else { // Fallback
+                const firstAdminTab = document.querySelector('.admin-tab');
+                if(firstAdminTab) openSubSection('admin', 'admin-console-prep', firstAdminTab);
+            }
+            
+            // Set initial active nav link based on hash or default to intro
+            const currentHash = window.location.hash || "#intro-section";
+            let navLinkFound = false;
+            document.querySelectorAll('nav a.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === currentHash) {
+                    link.classList.add('active');
+                    navLinkFound = true;
+                }
+            });
+            if (!navLinkFound && document.querySelector('nav a[href="#intro-section"]')) {
+                 document.querySelector('nav a[href="#intro-section"]').classList.add('active');
+            }
+
+            // Scroll to section if hash is present on load
+            if (window.location.hash) {
+                const targetElement = document.querySelector(window.location.hash);
+                if (targetElement) {
+                    setTimeout(() => { // Timeout to ensure layout is stable
+                        const navHeight = document.querySelector('nav.sticky-nav').offsetHeight;
+                        const elementPosition = targetElement.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.pageYOffset - navHeight - 16;
+                        window.scrollTo({ top: offsetPosition, behavior: "auto" }); // 'auto' for initial load
+                    }, 100);
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
