@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI活用推進計画 2025年度版</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif; /* 基本フォント指定 */
+            line-height: 1.7; /* 行間を少し広げて読みやすく */
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 1080px;
+            margin: 0 auto;
+            /* padding: 20px; Tailwindの p-5 や p-8 で代替 */
+        }
+        .section {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            /* margin-bottom: 30px; Tailwindの mb-8 や mb-12 で代替 */
+            /* padding: 25px; Tailwindの p-6 や p-8 で代替 */
+        }
+        .section-title {
+            font-size: 1.8rem; /* Tailwind text-2xl or text-3xl */
+            font-weight: bold;
+            color: #2563eb; /* Tailwind text-blue-600 */
+            border-bottom: 3px solid #2563eb; /* Tailwind border-blue-600 */
+            /* padding-bottom: 10px; Tailwind pb-2 or pb-3 */
+            /* margin-bottom: 20px; Tailwind mb-6 or mb-8 */
+            display: flex;
+            align-items: center;
+        }
+        .section-title i {
+            margin-right: 12px; /* Tailwind mr-3 */
+        }
+        .timeline {
+            position: relative;
+            margin: 30px 0; /* Tailwind my-8 */
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            height: 100%;
+            width: 4px;
+            background: #3b82f6; /* Tailwind bg-blue-500 */
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .timeline-item {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 30px; /* Tailwind mb-8 */
+        }
+        .timeline-content {
+            width: 45%;
+            padding: 20px; /* Tailwind p-5 */
+            background: white;
+            border-radius: 8px; /* Tailwind rounded-lg */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Tailwind shadow-md */
+        }
+        .timeline-content-right {
+            margin-left: auto;
+        }
+        .timeline-dot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #2563eb; /* Tailwind bg-blue-600 */
+            border-radius: 50%; /* Tailwind rounded-full */
+            left: 50%;
+            transform: translateX(-50%);
+            top: 20px;
+        }
+        .badge {
+            display: inline-block;
+            padding: 5px 12px; /* Tailwind px-3 py-1 */
+            border-radius: 20px; /* Tailwind rounded-full */
+            font-size: 0.8rem; /* Tailwind text-xs */
+            font-weight: 600; /* Tailwind font-semibold */
+            margin-right: 5px; /* Tailwind mr-1 */
+            margin-bottom: 5px; /* Tailwind mb-1 */
+        }
+        .badge-blue {
+            background-color: #dbeafe; /* Tailwind bg-blue-100 */
+            color: #2563eb; /* Tailwind text-blue-700 */
+        }
+        .badge-green {
+            background-color: #d1fae5; /* Tailwind bg-green-100 */
+            color: #059669; /* Tailwind text-green-700 */
+        }
+        .badge-orange {
+            background-color: #ffedd5; /* Tailwind bg-orange-100 */
+            color: #d97706; /* Tailwind text-orange-700 */
+        }
+        .progress-container {
+            background-color: #e5e7eb; /* Tailwind bg-gray-200 */
+            border-radius: 20px; /* Tailwind rounded-full */
+            height: 15px;
+            width: 100%;
+            margin: 10px 0; /* Tailwind my-2.5 */
+        }
+        .progress-bar {
+            background-color: #2563eb; /* Tailwind bg-blue-600 */
+            height: 15px;
+            border-radius: 20px; /* Tailwind rounded-full */
+            width: 0%;
+        }
+        .kpi-card {
+            border: 1px solid #e5e7eb; /* Tailwind border border-gray-200 */
+            border-radius: 8px; /* Tailwind rounded-lg */
+            padding: 20px; /* Tailwind p-5 */
+            margin-bottom: 15px; /* Tailwind mb-4 */
+            background: #f9fafb; /* Tailwind bg-gray-50 */
+        }
+        .chart-container {
+            position: relative;
+            height: 300px; /* 維持。必要に応じて調整 */
+            width: 100%;
+            margin: 20px 0; /* Tailwind my-5 */
+        }
+        .achievement-item {
+            margin-bottom: 20px; /* Tailwind mb-5 */
+            padding-bottom: 20px; /* Tailwind pb-5 */
+            border-bottom: 1px solid #e5e7eb; /* Tailwind border-b border-gray-200 */
+        }
+        .achievement-item:last-child {
+            border-bottom: none; /* 最後のアイテムの下線を消す */
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .achievement-title {
+            font-weight: bold; /* Tailwind font-bold */
+            color: #2563eb; /* Tailwind text-blue-600 */
+            margin-bottom: 8px; /* Tailwind mb-2 */
+        }
+        .challenge-item {
+            margin-bottom: 20px; /* Tailwind mb-5 */
+            padding-bottom: 20px; /* Tailwind pb-5 */
+            border-bottom: 1px solid #e5e7eb; /* Tailwind border-b border-gray-200 */
+        }
+         .challenge-item:last-child {
+            border-bottom: none; /* 最後のアイテムの下線を消す */
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .challenge-title {
+            font-weight: bold; /* Tailwind font-bold */
+            color: #dc2626; /* Tailwind text-red-600 */
+            margin-bottom: 8px; /* Tailwind mb-2 */
+        }
+        .highlight-box {
+            border-left: 4px solid #2563eb; /* Tailwind border-l-4 border-blue-600 */
+            padding-left: 15px; /* Tailwind pl-4 */
+            margin: 20px 0; /* Tailwind my-5 */
+            background-color: #f0f9ff; /* Tailwind bg-blue-50 */
+            padding: 20px; /* Tailwind p-5 */
+        }
+        .action-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px; /* Tailwind mb-5 */
+        }
+        .action-item:last-child {
+            margin-bottom: 0;
+        }
+        .action-icon {
+            margin-right: 12px; /* Tailwind mr-3 */
+            color: #2563eb; /* Tailwind text-blue-600 */
+            font-size: 1.2rem; /* Tailwind text-lg */
+            min-width: 24px; /* Tailwind w-6 */
+            text-align: center;
+        }
+        .action-content {
+            flex: 1;
+        }
+
+        .audio-player-container {
+            background-color: #f0f5ff; /* Tailwind bg-blue-50 (or a slightly different shade) */
+            border-radius: 8px; /* Tailwind rounded-lg */
+            padding: 1.5rem; /* Tailwind p-6 */
+            margin-bottom: 1.5rem; /* Tailwind mb-6 */
+            border: 1px solid #d0e0ff; /* Tailwind border-blue-200 */
+        }
+        
+        .audio-description {
+            font-size: 0.9rem; /* Tailwind text-sm */
+            color: #555; /* Tailwind text-gray-600 */
+            margin-top: 0.75rem; /* Tailwind mt-3 */
+        }
+        
+        .audio-player {
+            width: 100%;
+            margin-top: 0.75rem; /* Tailwind mt-3 */
+        }
+
+        @media print {
+            body {
+                background-color: white;
+                line-height: 1.5; /* 印刷時の行間調整 */
+            }
+            .container {
+                padding: 0;
+            }
+            .section {
+                box-shadow: none;
+                margin-bottom: 20px; /* Tailwind mb-5 for print */
+                padding: 15px 0; /* 上下パディング、左右はなし */
+            }
+            .section-title {
+                font-size: 1.6rem; /* 印刷時のフォントサイズ調整 */
+                margin-bottom: 15px; /* Tailwind mb-4 for print */
+                padding-bottom: 8px; /* Tailwind pb-2 for print */
+            }
+            .timeline::before {
+                background: #3b82f6 !important;
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+            .timeline-content {
+                padding: 10px; /* 印刷時のパディング縮小 */
+                box-shadow: none;
+                border: 1px solid #ccc; /* 印刷時は枠線で区別 */
+            }
+            .progress-bar {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+                background-color: #2563eb !important; /* 印刷時の色指定 */
+            }
+            .highlight-box {
+                padding: 10px; /* 印刷時のパディング縮小 */
+                margin: 15px 0; /* Tailwind my-4 for print */
+            }
+            .kpi-card {
+                padding: 10px; /* 印刷時のパディング縮小 */
+                border: 1px solid #eee;
+            }
+            .audio-player-container {
+                display: none; /* 印刷時にはオーディオプレーヤーを非表示 */
+            }
+            #supplementaryHeader button, #supplementaryHeader div > span, #supplementaryHeader div > i { /* 印刷時はトグルボタン非表示 */
+                display: none !important;
+            }
+            #supplementaryContent.hidden { /* 印刷時はデフォルトで開くように調整 (もし必要なら) */
+                /* display: block !important; */ /* 必要に応じてコメント解除 */
+            }
+        }
+    </style>
+</head>
+
+<body class="p-4 md:p-8"> <div class="container mx-auto px-4"> <header class="section p-6 md:p-8 mb-8 md:mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-center text-blue-700 mb-4">AI活用推進計画 2025年度版</h1>
+            
+            <div class="flex flex-wrap justify-center items-center my-6 text-gray-600 text-sm">
+                <div class="px-3 py-2 flex items-center">
+                    <i class="fas fa-calendar-alt mr-2"></i>
+                    <span>作成日：2025年5月30日</span>
+                </div>
+                <div class="px-3 py-2 flex items-center">
+                    <i class="fas fa-code-branch mr-2"></i>
+                    <span>バージョン：2.0.2</span>
+                </div>
+                <div class="px-3 py-2 flex items-center">
+                    <i class="fas fa-user mr-2"></i>
+                    <span>作成者：上村 知祥</span>
+                </div>
+                <div class="px-3 py-2 flex items-center">
+                    <i class="fas fa-hourglass-half mr-2"></i>
+                    <span>計画期間: 2025年6月 ～ 2026年3月</span>
+                </div>
+            </div>
+
+            <div class="audio-player-container">
+                <div class="flex items-center mb-2">
+                    <i class="fas fa-headphones text-blue-500 mr-2 text-lg"></i>
+                    <span class="font-semibold text-blue-700">音声ガイド</span>
+                </div>
+                <audio controls class="audio-player">
+                    <source src="audio/overview-ai.mp3" type="audio/mpeg">
+                    お使いのブラウザは音声再生をサポートしていません。
+                </audio>
+                <p class="audio-description">
+                    このガイドは、NotebookLMの音声概要機能を活用して出力された音声ファイルを元に構成されています。音声を聞きながらご覧ください。
+                </p>
+            </div>
+        </header>
+
+        <section class="section p-6 md:p-8 mb-8 md:mb-12">
+            <h2 class="section-title pb-3 mb-6"><i class="fas fa-flag mr-3"></i>1. はじめに：本計画の目的と概要</h2>
+            
+            <p class="mb-6 text-gray-700">
+                本計画は、2024年度のAI活用成果と2025年4-5月の振り返り結果に基づき策定しました。Google Workspaceの生成AI機能（Gemini、NotebookLM等）を核に、AI活用の組織的拡大と業務定着を目指し、以下の戦略的展開を図ります：
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-8">
+                <div class="bg-blue-50 rounded-lg p-6 flex flex-col items-center text-center shadow hover:shadow-lg transition-shadow duration-300">
+                    <div class="text-blue-600 mb-3 text-4xl">
+                        <i class="fas fa-expand-arrows-alt"></i>
+                    </div>
+                    <h3 class="font-bold mb-2 text-lg text-blue-700">対象範囲の拡大</h3>
+                    <p class="text-sm text-gray-600">ディレクター・アシスタントセクションから全社展開へ</p>
+                </div>
+
+                <div class="bg-blue-50 rounded-lg p-6 flex flex-col items-center text-center shadow hover:shadow-lg transition-shadow duration-300">
+                    <div class="text-blue-600 mb-3 text-4xl">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <h3 class="font-bold mb-2 text-lg text-blue-700">業務浸透の深化</h3>
+                    <p class="text-sm text-gray-600">特定業務から日常的な業務プロセス全般へ</p>
+                </div>
+
+                <div class="bg-blue-50 rounded-lg p-6 flex flex-col items-center text-center shadow hover:shadow-lg transition-shadow duration-300">
+                    <div class="text-blue-600 mb-3 text-4xl">
+                        <i class="fas fa-arrow-circle-up"></i>
+                    </div>
+                    <h3 class="font-bold mb-2 text-lg text-blue-700">創出価値の向上</h3>
+                    <p class="text-sm text-gray-600">単純効率化から質的向上・創造性発揮へ</p>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <p class="font-bold mb-2 text-blue-700">最終目的:</p>
+                <p class="text-gray-700">全社員の働き方の質向上と組織の継続的な成長・競争力強化の基盤づくり</p>
+            </div>
+        </section>
+
+        <section class="section p-6 md:p-8 mb-8 md:mb-12">
+            <h2 class="section-title pb-3 mb-6"><i class="fas fa-chart-line mr-3"></i>2. 現状分析と評価：2024年度の振り返り</h2>
+            
+            <p class="mb-6 text-gray-700">
+                2024年度は、AI活用推進の第一歩として、特に会議音声の文字起こしから議事録フォーマットへの自動変換・構造化を推進し、以下の主要な成果と課題が明確になりました。
+            </p>
+            
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-green-700 mb-4 flex items-center">
+                    <i class="fas fa-check-circle mr-2"></i>主な成果
+                </h3>
+                
+                <div class="achievement-item">
+                    <div class="achievement-title">議事録作成業務の大幅な効率化と品質向上</div>
+                    <p class="text-gray-700 text-sm">作業時間を83%削減（約3時間→30分）し、年間約240時間を創出（※週平均5h削減×48週換算）。処理精度も従来手作業と同等以上を維持。議事録の標準化・網羅性も向上。</p>
+                </div>
+                
+                <div class="achievement-item">
+                    <div class="achievement-title">高付加価値業務への注力促進</div>
+                    <p class="text-gray-700 text-sm">定型作業の削減により創造的・戦略的業務への集中を実現。情報共有・意思決定の迅速化にも貢献。</p>
+                </div>
+                
+                <div class="achievement-item">
+                    <div class="achievement-title">「データ構造化」アプローチの汎用性発見</div>
+                    <p class="text-gray-700 text-sm">未整理データを目的に応じて整理・構造化するというアプローチが、議事録作成のような特定業務に留まらず、営業支援、経理処理、品質管理など、幅広い業務に応用可能と判明。</p>
+                </div>
+            </div>
+            
+            <div>
+                <h3 class="text-xl font-bold text-red-700 mb-4 flex items-center">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>主な課題
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                    <div class="challenge-item">
+                        <div class="challenge-title">AIツール操作の学習負荷</div>
+                        <p class="text-gray-700 text-sm">新機能習得に時間を要し、質問・解決できる社内サポート体制が不十分。</p>
+                    </div>
+                    
+                    <div class="challenge-item">
+                        <div class="challenge-title">生成品質の不安定さ</div>
+                        <p class="text-gray-700 text-sm">会議により社内専門用語・略語の誤認識が発生、議事録生成フローによる自動整形後も手動修正が必要な場面が多発。</p>
+                    </div>
+                    
+                    <div class="challenge-item">
+                        <div class="challenge-title">効果測定の未整備</div>
+                        <p class="text-gray-700 text-sm">時間削減率や品質向上などの客観的指標が未設定、評価基準が不統一。</p>
+                    </div>
+                    
+                    <div class="challenge-item">
+                        <div class="challenge-title">改善サイクルの欠如</div>
+                        <p class="text-gray-700 text-sm">利用状況・満足度の定期的収集と成功/失敗事例の組織的共有の仕組みが未構築。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section p-6 md:p-8 mb-8 md:mb-12">
+            <h2 class="section-title pb-3 mb-6"><i class="fas fa-sitemap mr-3"></i>3. 2025年度の推進戦略</h2>
+            
+            <p class="mb-6 text-gray-700">
+                2024年度の成果と課題を踏まえ、AI活用の深化と組織全体への展開を図ります。
+            </p>
+            
+            <h3 class="text-xl font-bold text-blue-700 mb-4 flex items-center">
+                <i class="fas fa-tasks mr-2"></i>主要な取り組み（前年度課題への対応）
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="border border-blue-200 rounded-lg p-6 bg-blue-50 hover:shadow-md transition-shadow duration-300">
+                    <div class="text-blue-600 text-center mb-3 text-3xl">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h4 class="font-bold text-center mb-3 text-blue-700">活用スキルの習得支援と定着促進</h4>
+                    <ul class="list-disc pl-5 text-sm space-y-2 text-gray-700">
+                        <li>社員向け研修プログラムを企画・実施し、主要AI機能の操作スキルと業務活用力の向上を目指します。</li>
+                        <li>AI活用に関するルールと実践的なTIPS集を整備し、迷わず活用できる環境を整えます。</li>
+                    </ul>
+                </div>
+                
+                <div class="border border-blue-200 rounded-lg p-6 bg-blue-50 hover:shadow-md transition-shadow duration-300">
+                    <div class="text-blue-600 text-center mb-3 text-3xl">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h4 class="font-bold text-center mb-3 text-blue-700">AI活用による精度向上と業務最適化</h4>
+                    <ul class="list-disc pl-5 text-sm space-y-2 text-gray-700">
+                        <li>Google Meet 自動文字起こし機能の活用を前提に、既存のAI議事録フローをより効果的に進化させます。</li>
+                        <li>Google Workspaceのツール群と連携を強化し、業務の最適化を図ります。</li>
+                    </ul>
+                </div>
+                
+                <div class="border border-blue-200 rounded-lg p-6 bg-blue-50 hover:shadow-md transition-shadow duration-300">
+                    <div class="text-blue-600 text-center mb-3 text-3xl">
+                        <i class="fas fa-share-alt"></i>
+                    </div>
+                    <h4 class="font-bold text-center mb-3 text-blue-700">導入効果の可視化とナレッジ共有</h4>
+                    <ul class="list-disc pl-5 text-sm space-y-2 text-gray-700">
+                        <li>作業時間削減率などの指標をもとに、定期的な効果検証とフィードバックの仕組みを整備します。</li>
+                        <li>成功事例やノウハウを集約・共有する社内プラットフォームを構築・運用し、組織全体での学びを促進します。</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h3 class="text-xl font-bold text-blue-700 mb-4 flex items-center">
+                <i class="fab fa-google mr-2"></i>Google Workspaceを中核に据える理由
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="kpi-card hover:shadow-md transition-shadow duration-300">
+                    <div class="font-bold mb-2 text-blue-700 flex items-center">
+                        <i class="fas fa-coins mr-2"></i>コスト効率とセキュリティ
+                    </div>
+                    <p class="text-sm text-gray-700">既存ライセンスの有効活用とChatGPT等外部サービスの最適化（Teamプランライセンス縮小等）で年間数十万円削減。既存セキュリティ体制を維持できる利点も。</p>
+                </div>
+                
+                <div class="kpi-card hover:shadow-md transition-shadow duration-300">
+                    <div class="font-bold mb-2 text-blue-700 flex items-center">
+                        <i class="fas fa-puzzle-piece mr-2"></i>業務親和性
+                    </div>
+                    <p class="text-sm text-gray-700">Gmail、ドキュメント、スプレッドシート等の日常ツールとシームレスに連携し、自然なAI統合と低学習コストを実現。</p>
+                </div>
+                
+                <div class="kpi-card hover:shadow-md transition-shadow duration-300">
+                    <div class="font-bold mb-2 text-blue-700 flex items-center">
+                        <i class="fas fa-rocket mr-2"></i>将来性
+                    </div>
+                    <p class="text-sm text-gray-700">Googleによる最先端AI技術の継続的なアップデートを活用することで、長期的な技術優位性を確保。</p>
+                </div>
+            </div>
+            
+            <h3 class="text-xl font-bold text-blue-700 mb-4 flex items-center">
+                <i class="fas fa-robot mr-2"></i>他社AI技術の取り扱い方針
+            </h3>
+            
+            <p class="text-gray-700">
+                Google Workspaceを主軸としつつ、ChatGPTやClaude等の優れた外部AI技術も継続評価し、特定業務での有効性が確認できれば補完的に活用を検討します。
+            </p>
+        </section>
+
+        <section class="section p-6 md:p-8 mb-8 md:mb-12">
+            <h2 class="section-title pb-3 mb-6"><i class="fas fa-map mr-3"></i>4. 主要アクションとロードマップ</h2>
+            
+            <div class="timeline my-8">
+                <div class="timeline-item">
+                    <div class="timeline-content hover:shadow-lg transition-shadow duration-300">
+                        <div class="badge badge-blue mb-2">6-7月</div>
+                        <h4 class="font-bold mb-1 text-blue-700">Gemini活用研修</h4>
+                        <p class="text-sm text-gray-600">基本操作・応用力習得、満足度80%以上、各自1件以上の活用事例発表。</p>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content timeline-content-right hover:shadow-lg transition-shadow duration-300">
+                        <div class="badge badge-blue mb-2">7-8月</div>
+                        <h4 class="font-bold mb-1 text-blue-700">AI利用ルール・TIPS集展開</h4>
+                        <p class="text-sm text-gray-600">7月にルール策定、8月末にTIPS集公開、以降月次更新。</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content hover:shadow-lg transition-shadow duration-300">
+                        <div class="badge badge-blue mb-2">8-3月</div>
+                        <h4 class="font-bold mb-1 text-blue-700">月次AI活用事例共有会</h4>
+                        <p class="text-sm text-gray-600">毎月開催、年間10件以上の事例共有。</p>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content timeline-content-right hover:shadow-lg transition-shadow duration-300">
+                        <div class="badge badge-blue mb-2">9月、12月</div>
+                        <h4 class="font-bold mb-1 text-blue-700">AI活用効果測定</h4>
+                        <p class="text-sm text-gray-600">「役立った」評価70%以上を目標。</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content hover:shadow-lg transition-shadow duration-300">
+                        <div class="badge badge-blue mb-2">9月～</div>
+                        <h4 class="font-bold mb-1 text-blue-700">AIナレッジポータル運用</h4>
+                        <p class="text-sm text-gray-600">月30アクセス以上、月1回以上更新。</p>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content timeline-content-right hover:shadow-lg transition-shadow duration-300">
+                        <div class="badge badge-blue mb-2">11月、3月</div>
+                        <h4 class="font-bold mb-1 text-blue-700">成果発表会</h4>
+                        <p class="text-sm text-gray-600">AI活用成果物の共有、フィードバック収集。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section p-6 md:p-8 mb-8 md:mb-12">
+            <h2 class="section-title pb-3 mb-6"><i class="fas fa-users mr-3"></i>5. 推進体制と運営方針</h2>
+            
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-blue-700 mb-4 flex items-center">
+                    <i class="fas fa-user-tag mr-2"></i>役割分担
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="kpi-card hover:shadow-md transition-shadow duration-300">
+                        <div class="font-bold text-blue-700 mb-1">プロジェクトリーダー（月10時間）</div>
+                        <p class="text-sm text-gray-700">計画・進行管理、研修企画</p>
+                    </div>
+                    
+                    <div class="kpi-card hover:shadow-md transition-shadow duration-300">
+                        <div class="font-bold text-blue-700 mb-1">技術アドバイザー（月5時間）</div>
+                        <p class="text-sm text-gray-700">AI設定、トラブル対応、精度検証</p>
+                    </div>
+                    
+                    <div class="kpi-card hover:shadow-md transition-shadow duration-300">
+                        <div class="font-bold text-blue-700 mb-1">業務アドバイザー（月3時間）</div>
+                        <p class="text-sm text-gray-700">活用アイデア提供、事例レビュー</p>
+                    </div>
+                    
+                    <div class="kpi-card hover:shadow-md transition-shadow duration-300">
+                        <div class="font-bold text-blue-700 mb-1">ナレッジ管理担当（月8時間）</div>
+                        <p class="text-sm text-gray-700">ポータル管理、TIPS更新、FAQ対応（※8月以降）</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-8">
+                <h3 class="text-xl font-bold text-blue-700 mb-4 flex items-center">
+                    <i class="fas fa-cog mr-2"></i>運営方針
+                </h3>
+                
+                <p class="text-gray-700">
+                    四半期ごとに体制見直し、必要に応じて役割交代。繁忙期は柔軟に調整。
+                </p>
+            </div>
+            
+            <div>
+                <h3 class="text-xl font-bold text-blue-700 mb-4 flex items-center">
+                    <i class="fas fa-calendar-alt mr-2"></i>スケジュール概要
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="kpi-card hover:shadow-md transition-shadow duration-300">
+                        <div class="badge badge-green mb-2">第1期（6-8月）</div>
+                        <div class="font-bold text-green-700 mb-1">基盤構築</div>
+                        <p class="text-sm text-gray-700">研修実施、ルール・TIPS集策定</p>
+                    </div>
+                    
+                    <div class="kpi-card hover:shadow-md transition-shadow duration-300">
+                        <div class="badge badge-orange mb-2">第2期（9-11月）</div>
+                        <div class="font-bold text-orange-700 mb-1">活用促進・効果測定</div>
+                        <p class="text-sm text-gray-700">ナレッジポータル運用、効果測定実施</p>
+                    </div>
+                    
+                    <div class="kpi-card hover:shadow-md transition-shadow duration-300">
+                        <div class="badge badge-blue mb-2">第3期（12-3月）</div>
+                        <div class="font-bold text-blue-700 mb-1">成果共有・次期計画</div>
+                        <p class="text-sm text-gray-700">成果発表会実施、次年度計画策定</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="highlight-box mt-8">
+                <p class="font-bold mb-2 text-blue-700">さいごに:</p>
+                <p class="text-gray-700">本計画を通じ、全社員がAIを有効活用し、業務の質と創造性を高めることを目指します。<br>皆様のご協力をお願いいたします。</p>
+            </div>
+        </section>
+
+        <!-- section class="section p-6 md:p-8">
+            <div id="supplementaryHeader" class="flex justify-between items-center cursor-pointer border-b-2 border-blue-600 pb-3 mb-6 group" role="button" tabindex="0" aria-expanded="false" aria-controls="supplementaryContent">
+                <h2 class="section-title !border-b-0 !pb-0 !mb-0 flex items-center">
+                    <i class="fas fa-file-alt mr-3"></i>補足資料
+                </h2>
+                <div class="text-blue-600 group-hover:text-blue-800 transition-colors duration-300 flex items-center">
+                    <span id="toggleSupplementaryText" class="mr-1 text-sm">詳細を開く</span>
+                    <i id="toggleSupplementaryIcon" class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+            
+            <div id="supplementaryContent" class="hidden mt-6">
+                <h3 class="text-xl font-bold text-blue-700 mb-6"> 補足資料1：2024年度 実績詳細</h3>
+                
+                <div class="mb-8">
+                    <h4 class="font-bold mb-3 text-lg text-gray-800">1. 議事録作成業務の効率化と品質向上</h4>
+                    
+                    <div class="action-item">
+                        <div class="action-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="action-content">
+                            <p class="text-gray-700"><strong class="text-gray-800">作業時間短縮:</strong> 従来、1時間の会議に対し約3時間を要しておりました議事録作成作業が、AI活用により平均30分以内へと大幅に短縮されました。これは約83%の削減に相当いたします。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="action-item">
+                        <div class="action-icon">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div class="action-content">
+                            <p class="text-gray-700"><strong class="text-gray-800">コスト削減効果:</strong> 上記の作業時間短縮により、年間で約240時間の工数削減が見込まれます。これを時間単価2,500円で換算いたしますと、年間約60万円のコスト削減に繋がる計算でございます。（算出根拠：週平均5時間の削減 × 48週 × 2,500円/時間）</p>
+                        </div>
+                    </div>
+                    
+                    <div class="action-item">
+                        <div class="action-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="action-content">
+                            <p class="text-gray-700"><strong class="text-gray-800">品質の維持・向上:</strong> AIによる処理精度は、従来の手作業によるものと同等以上の品質を維持いたしました。加えて、議事録フォーマットの標準化や、記録される情報の網羅性向上にも貢献しております。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-8">
+                    <h4 class="font-bold mb-3 text-lg text-gray-800">2. 作業負担の軽減と高付加価値業務への注力促進</h4>
+                    
+                    <p class="mb-4 text-gray-700">
+                        議事録作成という定型業務にかかる担当者の作業負担が大幅に軽減された結果、より創造的で戦略的な業務（例：企画立案、分析業務、顧客対応改善など）に集中して時間を割けるようになりました。
+                    </p>
+                    
+                    <p class="mb-4 text-gray-700">
+                        これにより、会議後の情報共有スピードの向上や、意思決定プロセスの迅速化といった副次的な効果も観察されております。
+                    </p>
+                </div>
+                
+                <div class="mb-8">
+                    <h4 class="font-bold mb-3 text-lg text-gray-800">3. 「データ構造化」アプローチの汎用性の発見</h4>
+                    
+                    <p class="mb-4 text-gray-700">
+                        AIを活用して「未整理のデータを特定の目的に応じて整理・構造化する」というアプローチが、議事録作成という特定の業務に留まらず、他の様々な業務にも幅広く応用可能であるという重要な発見がございました。
+                    </p>
+                    
+                    <p class="font-bold mb-3 text-gray-800">具体的な応用例:</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+                        <div class="border border-green-200 rounded-lg p-5 bg-green-50 hover:shadow-md transition-shadow duration-300">
+                            <h5 class="font-bold text-green-700 mb-2">営業支援<br>(各種保守案件対応の効率化)</h5>
+                            <p class="text-sm text-gray-700">クライアントからの問い合わせメール（未整理データ）をもとに、社内システム入力用の見積依頼メッセージ（構造化データ）を自動生成いたします。</p>
+                        </div>
+                        
+                        <div class="border border-green-200 rounded-lg p-5 bg-green-50 hover:shadow-md transition-shadow duration-300">
+                            <h5 class="font-bold text-green-700 mb-2">経理処理<br>(月末請求処理報告の迅速化)</h5>
+                            <p class="text-sm text-gray-700">クライアントとのメールやチャット履歴（未整理データ）から、月末の請求処理に必要な請求項目、見積金額、納品日などの情報（構造化データ）を抽出・整理いたします。</p>
+                        </div>
+                        
+                        <div class="border border-green-200 rounded-lg p-5 bg-green-50 hover:shadow-md transition-shadow duration-300">
+                            <h5 class="font-bold text-green-700 mb-2">品質管理<br>(Backlogチケットから社内MTG用資料への変換)</h5>
+                            <p class="text-sm text-gray-700">プロジェクト管理ツールBacklogに起票された不具合報告チケット（未整理データ）から、現状分析、対応方針、次のアクションアイテムなどを整理し、社内会議用の報告資料（構造化データ）として明確化いたします。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-3 text-lg text-gray-800">4. 2024年度の課題詳細</h4>
+                    
+                    <div class="action-item">
+                        <div class="action-icon text-red-600">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <div class="action-content">
+                            <p class="font-bold text-red-700">AIツールの操作習得と活用手法の理解に関する学習負荷</p>
+                            <ul class="list-disc pl-5 mt-2 space-y-1 text-sm text-gray-700">
+                                <li>新しいAIツールのインターフェースや機能に慣れるまでに一定の時間が必要でございました。</li>
+                                <li>具体的な業務シーンでAIをどのように活用すれば効果的か、という実践的なノウハウの習得に難しさを感じる社員が見受けられました。</li>
+                                <li>疑問点や不明点を気軽に質問・解決できる社内サポート体制の必要性が高まっております。</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="action-item">
+                        <div class="action-icon text-red-600">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <div class="action-content">
+                            <p class="font-bold text-red-700">生成内容の精度に関する課題</p>
+                            <ul class="list-disc pl-5 mt-2 space-y-1 text-sm text-gray-700">
+                                <li>専門用語や社内特有の略語が含まれる会議におきまして、AIによる音声認識や文字起こしの精度が低下するケースがございました。</li>
+                                <li>生成されたテキストを社内標準のテンプレートに合わせて整形する作業が、期待したほど自動化されず、手作業による修正が必要となる場面がございました。</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="action-item">
+                        <div class="action-icon text-red-600">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <div class="action-content">
+                            <p class="font-bold text-red-700">AI活用効果の可視化と共通指標による効果測定の未整備</p>
+                            <ul class="list-disc pl-5 mt-2 space-y-1 text-sm text-gray-700">
+                                <li>AI導入による具体的な効果（時間削減、コスト削減、品質向上など）が、感覚的には理解できても、客観的なデータとして把握しづらい状況でございました。</li>
+                                <li>部門や業務ごとに効果測定の指標が異なっていたため、全社的な導入効果を統一的に評価することが困難でございました。</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="action-item">
+                        <div class="action-icon text-red-600">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <div class="action-content">
+                            <p class="font-bold text-red-700">継続的な改善に必要なフィードバックの仕組みの未構築</p>
+                            <ul class="list-disc pl-5 mt-2 space-y-1 text-sm text-gray-700">
+                                <li>AIツールの利用状況や満足度、改善要望などを定期的に収集し、分析・活用する正式なフィードバックループが十分に構築されておりませんでした。</li>
+                                <li>成功事例や失敗事例から得られた知見を、組織全体で共有し、次の改善に繋げる仕組みが不足しておりました。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section -->
+    </div>
+
+    <script>
+        // Chart.jsのスクリプトは変更なし。
+        /*
+        // Time Reduction Chart
+        const timeReductionCtx = document.getElementById('timeReductionChart')?.getContext('2d');
+        if (timeReductionCtx) {
+            // ... Chart.js code ...
+        }
+
+        // Quarterly Plan Chart
+        const quarterlyPlanCtx = document.getElementById('quarterlyPlanChart')?.getContext('2d');
+        if (quarterlyPlanCtx) {
+            // ... Chart.js code ...
+        }
+        */
+
+        window.onload = function() {
+            // Progress bar animation
+            const progressBars = document.querySelectorAll('.progress-bar');
+            progressBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%'; 
+                setTimeout(() => {
+                    bar.style.transition = 'width 1s ease-in-out';
+                    bar.style.width = width; 
+                }, 300); 
+            });
+
+            // Supplementary Materials Toggle
+            const supplementaryHeader = document.getElementById('supplementaryHeader');
+            const supplementaryContent = document.getElementById('supplementaryContent');
+            const toggleText = document.getElementById('toggleSupplementaryText');
+            const toggleIcon = document.getElementById('toggleSupplementaryIcon');
+
+            if (supplementaryHeader && supplementaryContent && toggleText && toggleIcon) {
+                // Default state: closed (already set by 'hidden' class in HTML)
+                // Ensure text and icon match the default closed state if JS runs after potential flicker
+                if (supplementaryContent.classList.contains('hidden')) {
+                    toggleText.textContent = '詳細を開く';
+                    toggleIcon.classList.remove('fa-chevron-down');
+                    toggleIcon.classList.add('fa-chevron-right');
+                    supplementaryHeader.setAttribute('aria-expanded', 'false');
+                } else {
+                    toggleText.textContent = '詳細を閉じる';
+                    toggleIcon.classList.remove('fa-chevron-right');
+                    toggleIcon.classList.add('fa-chevron-down');
+                     supplementaryHeader.setAttribute('aria-expanded', 'true');
+                }
+
+
+                supplementaryHeader.addEventListener('click', () => {
+                    const isHidden = supplementaryContent.classList.toggle('hidden');
+                    supplementaryHeader.setAttribute('aria-expanded', !isHidden);
+                    if (isHidden) {
+                        toggleText.textContent = '詳細を開く';
+                        toggleIcon.classList.remove('fa-chevron-down');
+                        toggleIcon.classList.add('fa-chevron-right');
+                    } else {
+                        toggleText.textContent = '詳細を閉じる';
+                        toggleIcon.classList.remove('fa-chevron-right');
+                        toggleIcon.classList.add('fa-chevron-down');
+                    }
+                });
+
+                // Keyboard accessibility for the toggle
+                supplementaryHeader.setAttribute('role', 'button'); // Already in HTML, but good to ensure
+                supplementaryHeader.setAttribute('tabindex', '0');  // Already in HTML
+                // aria-controls is already in HTML
+
+                supplementaryHeader.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault(); // Prevent page scroll on spacebar
+                        supplementaryHeader.click(); // Trigger the click event logic
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>
