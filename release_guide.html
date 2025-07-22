@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【図解】AI議事録フロー2.0 運用ガイドライン</title>
+    <style>
+        /* 基本設定 */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            background-color: #f4f7f9;
+            color: #333333;
+            line-height: 1.6;
+        }
+
+        /* 全体を囲むコンテナ */
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        /* 見出しスタイル */
+        h1, h2, h3, h4 {
+            font-weight: bold;
+            margin: 0;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #1a237e;
+            line-height: 1.3;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            color: #1a237e;
+            border-bottom: 3px solid #0288d1;
+            display: inline-block;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+        }
+        
+        h3 {
+            font-size: 1.3em;
+        }
+
+        /* 中央揃え */
+        .text-center {
+            text-align: center;
+        }
+        
+        /* 区切り線 */
+        .divider {
+            border: 0;
+            height: 2px;
+            background: linear-gradient(to right, rgba(255,255,255,0), #0288d1, rgba(255,255,255,0));
+            margin: 40px 0;
+        }
+        
+        /* アイコンの基本スタイル */
+        .icon {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        /* ヘッダーセクション */
+        .header .subtitle {
+            font-size: 1.2em;
+            color: #0288d1;
+            font-weight: bold;
+        }
+        .header .subtext {
+            font-size: 1.1em;
+            color: #555555;
+        }
+
+        /* Scene 1: Before */
+        .scene-before .cards {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+            text-align: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .scene-before .card {
+            width: 200px;
+        }
+        .scene-before .card .icon {
+            width: 60px;
+            height: 60px;
+            color: #c62828;
+        }
+        .scene-before .card h3 {
+             color: #c62828;
+             margin: 10px 0;
+        }
+        .scene-before .card p {
+            font-size: 0.9em;
+            color: #666666;
+        }
+        
+        /* Scene 2: After */
+        .scene-after {
+            background-color: #e3f2fd;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 50px;
+        }
+        .scene-after .content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .scene-after .content .icon {
+            width: 80px;
+            height: 80px;
+            color: #1a237e;
+        }
+        .scene-after .content p {
+            font-size: 1.3em;
+            text-align: left;
+            margin: 0;
+        }
+
+        /* How it works: Steps */
+        .steps .step {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+            gap: 20px;
+        }
+        .steps .step-number {
+            background-color: #0288d1;
+            color: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            line-height: 60px;
+            font-size: 1.5em;
+            font-weight: bold;
+            flex-shrink: 0;
+            text-align: center;
+        }
+        .steps .step-content {
+            text-align: left;
+            flex-grow: 1;
+        }
+        .steps .step-content h3 {
+             color: #1a237e;
+        }
+        .steps .step-content p {
+            margin: 5px 0 0 0;
+        }
+        .steps .step-icon {
+            width: 50px;
+            height: 50px;
+            flex-shrink: 0;
+            color: #0288d1;
+        }
+        .steps .arrow {
+            text-align: center;
+            font-size: 2em;
+            color: #0288d1;
+            margin: 5px 0;
+        }
+        .steps .step-final {
+            background-color: #f1f8e9;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .steps .step-final .step-number {
+            background-color: #558b2f;
+        }
+        .steps .step-final .step-content h3 {
+            color: #2e7d32;
+        }
+        .steps .step-final .step-icon {
+            color: #2e7d32;
+            align-self: flex-start;
+        }
+        .steps .step-final .rule-box {
+            margin-top: 15px;
+            border-left: 3px solid #7cb342;
+            padding-left: 15px;
+        }
+        .steps .step-final .rule-box h4 {
+            color: #2e7d32;
+        }
+        .steps .step-final .rule-box p {
+            font-size: 0.9em;
+            margin: 5px 0 0 0;
+        }
+
+        /* Level Up Section */
+        .level-up .cards {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .level-up .card {
+            width: 320px;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .level-up .card-dictionary {
+            background-color: #fff8e1;
+            border: 1px solid #ffecb3;
+        }
+        .level-up .card-markdown {
+            background-color: #f3e5f5;
+            border: 1px solid #e1bee7;
+        }
+        .level-up .card .icon {
+            width: 60px;
+            height: 60px;
+        }
+        .level-up .card-dictionary .icon { color: #f57f17; }
+        .level-up .card-markdown .icon { color: #6a1b9a; }
+        .level-up .card h3 {
+            margin: 10px 0;
+        }
+        .level-up .card-dictionary h3 { color: #f57f17; }
+        .level-up .card-markdown h3 { color: #6a1b9a; }
+        .level-up .card p {
+            font-size: 0.9em;
+            color: #666666;
+            text-align: left;
+        }
+        .level-up .rule-box {
+            margin-top: 15px;
+            padding-left: 15px;
+            text-align: left;
+        }
+        .level-up .card-dictionary .rule-box { border-left: 3px solid #f9a825; }
+        .level-up .card-markdown .rule-box { border-left: 3px solid #8e24aa; }
+        .level-up .rule-box h4 { margin: 0; }
+        .level-up .card-dictionary .rule-box h4 { color: #f57f17; }
+        .level-up .card-markdown .rule-box h4 { color: #6a1b9a; }
+        .level-up .rule-box p { margin: 5px 0 0 0; }
+
+        /* Conclusion Section */
+        .conclusion {
+            background-color: #1a237e;
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+        }
+        .conclusion h2 {
+            color: white;
+            border-bottom-color: white;
+        }
+        .conclusion .summary {
+            font-size: 1.1em;
+            margin: 20px 0;
+        }
+        .conclusion .benefits {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .conclusion .benefit {
+            width: 200px;
+        }
+        .conclusion .benefit .icon {
+            width: 50px;
+            height: 50px;
+            color: #ffffff;
+        }
+        .conclusion .benefit h3 {
+            margin: 10px 0;
+        }
+        .conclusion .benefit p {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        .conclusion .final-call {
+            margin-top: 30px;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 40px;
+            font-size: 0.9em;
+            color: #888888;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <main class="container">
+        <!-- ======================= -->
+        <!-- Header                  -->
+        <!-- ======================= -->
+        <header class="header text-center">
+            <p class="subtitle">【全社展開用】図解・5分でわかる！</p>
+            <h1>AI議事録フロー2.0<br>運用ガイドライン</h1>
+            <p class="subtext">議事録作成を「作業」から「会社の資産」へ。</p>
+        </header>
+
+        <hr class="divider">
+
+        <!-- ======================= -->
+        <!-- Scene 1: Before         -->
+        <!-- ======================= -->
+        <section class="scene-before text-center">
+            <h2>SCENE 1: これまでの議事録作成</h2>
+            <p>会議が終わった後、こんな「憂鬱」を感じていませんか？</p>
+            <div class="cards">
+                <div class="card">
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 20c4.4 0 8-3.6 8-8s-3.6-8-8-8s-8 3.6-8 8s3.6 8 8 8m0-18c5.5 0 10 4.5 10 10s-4.5 10-10 10S2 17.5 2 12S6.5 2 12 2m.7 10.5l3.6 3.6l-1.4 1.4l-4.3-4.3V7h2v5.5Z"/></svg>
+                    <h3>時間が溶ける…</h3>
+                    <p>録音を聞き返し、全てを手作業で文字起こし。重要な会議ほど時間がかかる。</p>
+                </div>
+                <div class="card">
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8zm-1-5h2v2h-2v-2zm0-8h2v6h-2V7z"/></svg>
+                    <h3>あれ、何が決まった？</h3>
+                    <p>要点が抜け漏れたり、自分の解釈が入ってしまい、客観的な記録にならない。</p>
+                </div>
+                <div class="card">
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20.8 22.2L2.6 4L4 2.6l18.2 18.2L20.8 22.2zM18 18H7.2l10.8-10.8V18zm-2-8.2L11.2 5H18v4.8zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6z"/></svg>
+                    <h3>どこに保存した？</h3>
+                    <p>メモ帳やチャット、個人のPC内…。情報がバラバラで、後から誰も見つけられない。</p>
+                </div>
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- ======================= -->
+        <!-- Scene 2: After          -->
+        <!-- ======================= -->
+        <section class="scene-after text-center">
+            <h2>SCENE 2: 新しい相棒の登場</h2>
+            <div class="content">
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor"><path d="M154.2 26.8a8 8 0 0 0-10.4 4.4L87 148.8l-12.6-28.2a8 8 0 0 0-14.8 6.6l20 45a8 8 0 0 0 14.8-6.6l56.8-127.8a8 8 0 0 0-4.4-10.4ZM92.6 219a8 8 0 0 1-4.4 10.4l-56.8 25.2a8 8 0 0 1-10.4-4.4L1.2 122.4a8 8 0 0 1 4.4-10.4l56.8-25.2a8 8 0 0 1 10.4 4.4l19.8 44.4a8 8 0 0 1-6.6 14.8L80 148.8l12.6 28.2a8 8 0 0 1-6.6 14.8L73.4 185a8 8 0 0 1-6.6-14.8l12.6-28.2l-15-33.6L9.2 128l15 33.6L81 185.2l18.2-40.8Z"/></svg>
+                <p>その悩み、<br><strong>「AI議事録フロー2.0」</strong>が解決します。<br>面倒な作業はAIに任せ、あなたはもっと創造的な仕事に集中できます。</p>
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- ======================= -->
+        <!-- How It Works            -->
+        <!-- ======================= -->
+        <section class="steps text-center">
+            <h2>HOW IT WORKS: 新しい議事録作成の5ステップ</h2>
+            <p>たったこれだけ。誰でも質の高い議事録が作れる新しい流れです。</p>
+
+            <!-- Step 1 -->
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>AIに会議を渡す</h3>
+                    <p>会議の音声データや会話のテキストを、AI（Gemini）に読み込ませます。</p>
+                </div>
+                <svg class="step-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+            </div>
+            <div class="arrow">↓</div>
+
+            <!-- Step 2 -->
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>AIが "下書き" を高速作成</h3>
+                    <p>AIが自動で文字起こし、要約、決定事項、ToDoリストを整理してくれます。</p>
+                </div>
+                <svg class="step-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-2V7h2v2zm-4 10h-2v-4h2v4zm-4-10H9V7h2v2zm-4 10H5v-4h2v4zm14-8h-2v2h2v-2zm-4 0h-2v2h2v-2zm-4 0H9v2h2v-2zm-4 0H5v2h2v-2zm14-4h-2v2h2V7zm-4 0h-2v2h2V7zM7 7H5v2h2V7zM16 2H8C6.9 2 6 2.9 6 4v16c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+            </div>
+            <div class="arrow">↓</div>
+
+            <!-- Step 3 -->
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>あなたは "編集長"</h3>
+                    <p>AIの作った下書きが正確か、最終チェックと修正を行います。<b style="color: #c62828;">AIは完璧ではありません。人の目での確認が品質を担保します。</b></p>
+                </div>
+                <svg class="step-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 14h-8v-2h8v2zm0-4h-8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+            </div>
+            <div class="arrow">↓</div>
+            
+            <!-- Step 4 -->
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>ワンクリックで "公式文書" に</h3>
+                    <p>エクスポートボタン一つで、Googleドキュメントとして書き出します。</p>
+                </div>
+                <svg class="step-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M18.5 3H5.5C4.12 3 3 4.12 3 5.5v13C3 19.88 4.12 21 5.5 21h13c1.38 0 2.5-1.12 2.5-2.5v-13C21 4.12 19.88 3 18.5 3zM12 6c1.66 0 3 1.34 3 3s-1.34 3-3 3s-3-1.34-3-3s1.34-3 3-3zm6 12H6v-1.5c0-2 4-3.1 6-3.1s6 1.1 6 3.1V18z"/></svg>
+            </div>
+            <div class="arrow">↓</div>
+
+            <!-- Step 5 & Rule 1 -->
+            <div class="step step-final">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                    <h3>全社の "知の書庫" へ</h3>
+                    <p>完成した議事録は、必ずGoogleドライブ内の所定の場所に保存します。</p>
+                    <div class="rule-box">
+                        <h4>【ルール①】なぜGoogleドライブなの？</h4>
+                        <p>
+                            <strong>探しやすい:</strong> 全社の情報が一元化され、誰でも必要な情報を検索できます。<br>
+                            <strong>資産になる:</strong> 個人のメモではなく、会社の公式な「知識」として蓄積・活用できます。
+                        </p>
+                    </div>
+                </div>
+                <svg class="step-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M7.8 4.4L12 12l4.2-7.6H7.8zM21.6 12L12 21.6L2.4 12l4.8-8.4h9.6l4.8 8.4zM12 12l-3.6 6.2h7.2L12 12z"/></svg>
+            </div>
+        </section>
+
+        <hr class="divider">
+        
+        <!-- ======================= -->
+        <!-- Level Up                -->
+        <!-- ======================= -->
+        <section class="level-up text-center">
+            <h2>LEVEL UP: フローを支える2つの仕組み</h2>
+            <p>このフローをさらに強力にするための、全社で協力すべきルールと便利な小技です。</p>
+            <div class="cards">
+                <!-- Card 1: Dictionary -->
+                <div class="card card-dictionary">
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M5 8h14V6H5v2zm14 5H5v-2h14v2zm-7 5h7v-2h-7v2zM5 18v-2h4v2H5zm14-4h-4v-2h4v2zM5 14v-2h10v2H5z"/></svg>
+                    <h3>AIを育てる「社内共通辞書」</h3>
+                    <p>AIは、社内の専門用語やプロジェクト名、人名を最初は知りません。これらを「社内共通辞書」に登録することで、AIの認識精度がどんどん向上し、より賢いアシスタントに育ちます。</p>
+                    <div class="rule-box">
+                        <h4>【ルール②】辞書の整備にご協力を</h4>
+                        <p>気づいた用語を随時追加することが、未来の自分や同僚の仕事を楽にします。</p>
+                    </div>
+                </div>
+                
+                <!-- Card 2: Markdown -->
+                <div class="card card-markdown">
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6l6 6l1.4-1.4zm5.2 0l4.6-4.6l-4.6-4.6L16 6l6 6l-6 6l-1.4-1.4z"/></svg>
+                    <h3>情報を旅させる「マークダウン」</h3>
+                    <p>Googleドキュメントは「マークダウン (.md)」というシンプルなテキスト形式で書き出せます。これは、レイアウトを保ったまま、チャットツール等に情報を簡単に「引越し」させるための便利な呪文のようなものです。</p>
+                    <div class="rule-box">
+                        <h4>プチテクニック</h4>
+                        <p>「ファイル > ダウンロード > マークダウン(.md)」で簡単に変換できます。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- ======================= -->
+        <!-- Conclusion              -->
+        <!-- ======================= -->
+        <section class="conclusion text-center">
+            <h2>CONCLUSION: なぜこのフローが会社を強くするのか？</h2>
+            <p class="summary">「AI議事録フロー2.0」は、単なる効率化ツールではありません。<br>個人の負担を減らし、組織全体の知識レベルを引き上げるための「新しい文化」です。</p>
+            <div class="benefits">
+                <div class="benefit">
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2zM9.5 16.5L6 13l1.41-1.41L9.5 13.67l6.09-6.09L17 9l-7.5 7.5z"/></svg>
+                    <h3>① 時間の創出</h3>
+                    <p>議事録作成時間を大幅に削減し、より付加価値の高い業務に集中できる。</p>
+                </div>
+                <div class="benefit">
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5l1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    <h3>② 認識の統一</h3>
+                    <p>客観的で質の高い議事録が迅速に共有され、チームの認識齟齬を防ぐ。</p>
+                </div>
+                <div class="benefit">
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                    <h3>③ 知識の資産化</h3>
+                    <p>全ての議事録が検索可能なナレッジとなり、組織全体の知的財産となる。</p>
+                </div>
+            </div>
+            <p class="final-call">ご協力をお願いいたします。</p>
+        </section>
+        
+        <!-- ======================= -->
+        <!-- Footer                  -->
+        <!-- ======================= -->
+        <footer class="footer text-center">
+            <hr>
+            <p>情報ソース：</p>
+            <p>全社展開用 AI議事録生成フロー2.0 運用ガイドライン（2025年7月22日作成）</p>
+        </footer>
+
+    </main>
+
+</body>
+</html>
