@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【ウェブスライド版】ウェブアクセシビリティ図解</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Roboto:wght@700&display=swap" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden; /* Prevent body scroll */
+        }
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #f8f9fa;
+            color: #343a40;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .slide-container {
+            width: 100%;
+            height: 100%;
+            max-width: 1100px; /* Wider for slide format */
+            max-height: 800px;
+            position: relative;
+            background-color: white;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .slide {
+            display: none;
+            width: 100%;
+            height: 100%;
+            padding: 3rem 4rem;
+            overflow-y: auto;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        .slide.active {
+            display: flex;
+        }
+        .slide-content {
+             max-width: 900px;
+             width: 100%;
+        }
+        .navigation {
+            position: absolute;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+        .nav-btn {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .nav-btn:hover {
+            background-color: #2563eb;
+        }
+        .nav-btn:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+        .page-counter {
+            position: absolute;
+            bottom: 2rem;
+            left: 2rem;
+            font-size: 1rem;
+            color: #6b7280;
+            font-weight: bold;
+        }
+
+        /* Original styles from infographic */
+        .font-roboto {
+            font-family: 'Roboto', sans-serif;
+        }
+        .section-title {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+        .section-subtitle {
+            font-size: 1.125rem;
+            color: #6c757d;
+            margin-bottom: 2.5rem;
+        }
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            margin-bottom: 1rem; /* Adjusted margin */
+        }
+        .icon-box {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+        .tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+        .comparison-box {
+            border: 2px solid;
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        .advice-card {
+            border-left: 4px solid;
+            padding: 1.5rem;
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="slide-container">
+        <!-- Slide 1: Introduction -->
+        <div class="slide active">
+            <div class="slide-content text-center">
+                <header>
+                    <div class="inline-block bg-sky-100 text-sky-800 text-sm font-bold px-4 py-2 rounded-full mb-4">
+                        すべての人のためのウェブ
+                    </div>
+                    <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4 leading-tight">
+                        あなたのWebサイト、<br>誰かを<span class="text-sky-600">置き去り</span>にしていませんか？
+                    </h1>
+                    <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                        気づかないうちに作られている「見えない壁」。その正体と、壁を壊して橋を架ける方法を図解します。
+                    </p>
+                </header>
+            </div>
+        </div>
+
+        <!-- Slide 2: What is Accessibility? -->
+        <div class="slide">
+             <div class="slide-content text-center">
+                <h2 class="section-title text-gray-800">そもそも「アクセシビリティ」って何？</h2>
+                <div class="bg-green-50 border-l-4 border-green-500 p-6 rounded-lg max-w-3xl mx-auto mb-8">
+                    <p class="text-xl md:text-2xl font-bold text-green-800">
+                        年齢や身体の能力、利用環境にかかわらず、<br>誰もがウェブの情報やサービスを<span class="underline decoration-wavy decoration-green-600">スムーズに利用できる</span>状態のこと。
+                    </p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-6 text-left">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <div class="icon-box bg-blue-100"><svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg></div>
+                        <h3 class="font-bold text-lg mb-2 text-center">視覚の特性</h3>
+                        <p class="text-sm text-gray-600">全盲やロービジョンの方、色の区別がつきにくい方でも、画面の情報を正しく理解できる。</p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <div class="icon-box bg-purple-100"><svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.636 18.364a9 9 0 010-12.728m2.828 9.9a5 5 0 010-7.072"></path></svg></div>
+                        <h3 class="font-bold text-lg mb-2 text-center">聴覚の特性</h3>
+                        <p class="text-sm text-gray-600">音声が聞こえなくても、動画の字幕やテキストで内容を把握できる。</p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <div class="icon-box bg-orange-100"><svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 8.812a9.025 9.025 0 0112.728 0M8.812 7.188a9.025 9.025 0 010 12.728"></path></svg></div>
+                        <h3 class="font-bold text-lg mb-2 text-center">操作の特性</h3>
+                        <p class="text-sm text-gray-600">マウスが使えなくても、キーボードだけで全ての操作を完了できる。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Why now? -->
+        <div class="slide">
+            <div class="slide-content flex flex-col md:flex-row items-center gap-8">
+                <div class="flex-shrink-0">
+                    <div class="icon-box bg-red-100 !w-32 !h-32">
+                        <svg class="!w-16 !h-16 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                </div>
+                <div>
+                    <h2 class="section-title text-gray-800 !text-3xl">なぜ今、対応が必要なの？</h2>
+                    <p class="text-gray-600 mb-4 text-lg">以前は「努力義務」でしたが、法改正（障害者差別解消法）により、<span class="font-bold">事業者による「合理的配慮の提供」が法的義務</span>になりました。</罰則はなくても、対応しないことは事業リスクになり得ます。</p>
+                    <div class="flex items-center gap-4 p-4 bg-yellow-50 rounded-lg">
+                        <div class="flex-shrink-0"><svg class="w-8 h-8 text-yellow-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div>
+                        <p class="text-yellow-900 text-lg"><span class="font-bold">「努力目標」</span>の時代は終わり、<span class="font-bold text-red-600">「やらなければならない義務」</span>の時代へ。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Example 1 (Image) -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="section-title text-center text-gray-800">具体例1：画像の情報が伝わらない壁</h2>
+                <p class="text-gray-600 mb-6 text-center">視覚に頼れないユーザーは、「画面読み上げソフト」を使います。画像に「代替テキスト」がないと、そこに何があるのか全く伝わりません。</p>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="comparison-box border-red-300 bg-red-50">
+                        <h4 class="font-bold text-lg mb-2 text-red-700 flex items-center"><span>壁がある状態</span><svg class="w-6 h-6 ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg></h4>
+                        <img src="https://placehold.co/400x250/f87171/ffffff?text=Coffee+Photo" alt="" class="rounded-md mb-3 w-full">
+                        <p class="font-mono text-sm bg-white p-3 rounded"><span class="text-gray-500">&lt;img src="..." <span class="text-red-600 font-bold">alt=""</span>&gt;</span><br><br><span class="font-sans font-bold text-red-700">読み上げ：「画像」</span></p>
+                    </div>
+                    <div class="comparison-box border-green-300 bg-green-50">
+                        <h4 class="font-bold text-lg mb-2 text-green-700 flex items-center"><span>壁を壊した状態</span><svg class="w-6 h-6 ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg></h4>
+                        <img src="https://placehold.co/400x250/4ade80/ffffff?text=Coffee+Photo" alt="ラテアートが施された温かいカフェラテ" class="rounded-md mb-3 w-full">
+                        <p class="font-mono text-sm bg-white p-3 rounded"><span class="text-gray-500">&lt;img src="..." <span class="text-green-600 font-bold">alt="..."</span>&gt;</span><br><br><span class="font-sans font-bold text-green-700">読み上げ：「ラテアートが施された温かいカフェラテ」</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Example 2 (Keyboard) -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="section-title text-center text-gray-800">具体例2：キーボードで操作できない壁</h2>
+                 <p class="text-gray-600 mb-6 text-center">病気や怪我でマウスが使えない人は、Tabキーで操作します。キーボードで操作できないサイトは「行き止まり」と同じです。</p>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="comparison-box border-red-300 bg-red-50">
+                        <h4 class="font-bold text-lg mb-2 text-red-700 flex items-center"><span>壁がある状態</span><svg class="w-6 h-6 ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg></h4>
+                        <div class="p-6 text-center"><p class="mb-4">Tabキーを押しても<br>ボタンが選択されない…</p><button class="bg-gray-300 text-gray-500 px-6 py-2 rounded-lg cursor-not-allowed">申込む</button></div>
+                    </div>
+                    <div class="comparison-box border-green-300 bg-green-50">
+                        <h4 class="font-bold text-lg mb-2 text-green-700 flex items-center"><span>壁を壊した状態</span><svg class="w-6 h-6 ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg></h4>
+                        <div class="p-6 text-center"><p class="mb-4">Tabキーで選択でき、<br>Enterキーで押せる！</p><button class="bg-blue-600 text-white px-6 py-2 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-300">申込む</button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Example 3 (Color) -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="section-title text-center text-gray-800">具体例3：文字が背景に溶ける壁</h2>
+                <p class="text-gray-600 mb-6 text-center">ロービジョンの方や高齢者、屋外でスマホを見ている人にとって、コントラストが低いと情報は存在しないのと同じです。</p>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="comparison-box border-red-300 bg-red-50">
+                        <h4 class="font-bold text-lg mb-2 text-red-700 flex items-center"><span>壁がある状態</span><svg class="w-6 h-6 ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg></h4>
+                        <div class="p-6 rounded-lg" style="background-color: #a5f3fc;"><p style="color: #e0f2fe;">重要な情報がここに書かれていますが、非常に読みにくいです。</p><p class="text-center mt-4"><span class="font-bold text-red-700">コントラスト比: 1.25</span></p></div>
+                    </div>
+                    <div class="comparison-box border-green-300 bg-green-50">
+                        <h4 class="font-bold text-lg mb-2 text-green-700 flex items-center"><span>壁を壊した状態</span><svg class="w-6 h-6 ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg></h4>
+                        <div class="p-6 rounded-lg" style="background-color: #a5f3fc;"><p style="color: #083344;">重要な情報がここに書かれています。これならはっきり読めます。</p><p class="text-center mt-4"><span class="font-bold text-green-700">コントラスト比: 7.93</span></p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Practical Guide -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="section-title text-center text-gray-800">わかった、でも何から始める？</h2>
+                <p class="section-subtitle text-center">大丈夫。すべてを一度にやる必要はありません。まずはここから。</p>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="font-bold text-xl mb-3 text-sky-700">Q. 最優先でやるべきことは？</h3>
+                        <p class="text-gray-700 mb-4">A. 「重大な影響」を及ぼすバリアから取り除きましょう。</p>
+                        <ol class="list-decimal list-inside space-y-2 text-gray-800 bg-gray-50 p-4 rounded-lg">
+                            <li><span class="font-bold">キーボードだけで操作が終わるか</span>の確認。</li>
+                            <li><span class="font-bold">画像や動画に代替情報があるか</span>の確認。</li>
+                            <li><span class="font-bold">色のコントラストが十分か</span>の確認。</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-xl mb-3 text-sky-700">Q. 効率化できるツールは？</h3>
+                        <p class="text-gray-700 mb-4">A. 自動チェックツールを活用しましょう。ただし最後は人の確認が重要です。</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-800 bg-gray-50 p-4 rounded-lg">
+                            <li><span class="font-bold">axe DevTools:</span> Chrome拡張機能。問題箇所と修正方法を提示。</li>
+                            <li><span class="font-bold">Lighthouse:</span> Chrome開発者ツールに内蔵。手軽に診断可能。</li>
+                            <li><span class="font-bold">コントラストチェッカー:</span> デザイン段階で配色を確認するツール。</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Team Hints -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="section-title text-center text-gray-800">チームで壁を乗り越えるためのヒント</h2>
+                <p class="section-subtitle text-center">アクセシビリティは一人で抱えるものではありません。</p>
+                <div class="space-y-6">
+                    <div class="advice-card border-orange-400">
+                        <h3 class="font-bold text-xl mb-2 text-orange-800">アドバイス1：最初に「共通の地図」を用意する</h3>
+                        <p class="text-gray-600"><strong>失敗談：</strong>Excelの課題管理表が乱立し、最新版が不明に。誰が何を担当し、状況がどうなっているか、誰も全体を把握できなくなりました。</p>
+                        <p class="text-green-700 mt-2">💡 <span class="font-bold">解決策：</span>開始時に、担当・ステータス等を網羅した共通フォーマットを準備・合意する。</p>
+                    </div>
+                    <div class="advice-card border-purple-400">
+                        <h3 class="font-bold text-xl mb-2 text-purple-800">アドバイス2：タスクを「管理しやすい単位」にまとめる</h3>
+                        <p class="text-gray-600"><strong>失敗談：</strong>タスクの管理単位が曖昧で進捗整理が難航。クライアントへの報告が大幅に遅れてしまいました。</p>
+                        <p class="text-green-700 mt-2">💡 <span class="font-bold">解決策：</span>初期段階で修正項目をグルーピング・構造化し、「管理しやすい単位」に整える。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Summary -->
+        <div class="slide">
+            <div class="slide-content text-center">
+                <div class="card bg-gradient-to-br from-sky-500 to-indigo-600 text-white py-12">
+                    <h2 class="text-4xl font-bold mb-4">アクセシビリティは「文化」である</h2>
+                    <p class="text-xl opacity-90 mb-6">一部の専門家だけが頑張るのではなく、<br>関わる全員が<span class="font-bold underline decoration-wavy">「自分ごと」</span>として捉えることが鍵です。</p>
+                    <p class="text-xl font-bold">それは「コスト」ではなく、より多くの人に価値を届け、<br>プロダクトの品質を高める「投資」なのです。</p>
+                </div>
+                 <footer class="mt-8 pt-4 border-t text-sm text-gray-500">
+                    <h3 class="font-bold text-base text-gray-700 mb-2">情報ソース</h3>
+                    <a href="https://www8.cao.go.jp/shougai/suishin/sabekai/kihonhoushin/r05/pdf/honbun.pdf" target="_blank" rel="noopener noreferrer" class="text-sky-600 hover:underline">
+                        障害を理由とする差別の解消の推進に関する基本方針 (内閣府)
+                    </a>
+                </footer>
+            </div>
+        </div>
+
+
+        <!-- Navigation -->
+        <div id="page-counter" class="page-counter"></div>
+        <div class="navigation">
+            <button id="prevBtn" class="nav-btn">前へ</button>
+            <button id="nextBtn" class="nav-btn">次へ</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const slides = document.querySelectorAll('.slide');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const pageCounter = document.getElementById('page-counter');
+            let currentSlide = 0;
+
+            function showSlide(index) {
+                // Hide all slides
+                slides.forEach((slide, i) => {
+                    slide.classList.remove('active');
+                });
+
+                // Show the target slide
+                slides[index].classList.add('active');
+                currentSlide = index;
+
+                // Update button states
+                prevBtn.disabled = index === 0;
+                nextBtn.disabled = index === slides.length - 1;
+
+                // Update page counter
+                pageCounter.textContent = `${index + 1} / ${slides.length}`;
+            }
+
+            // Event Listeners
+            nextBtn.addEventListener('click', () => {
+                if (currentSlide < slides.length - 1) {
+                    showSlide(currentSlide + 1);
+                }
+            });
+
+            prevBtn.addEventListener('click', () => {
+                if (currentSlide > 0) {
+                    showSlide(currentSlide - 1);
+                }
+            });
+
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight') {
+                    nextBtn.click();
+                } else if (e.key === 'ArrowLeft') {
+                    prevBtn.click();
+                }
+            });
+
+            // Initial setup
+            showSlide(0);
+        });
+    </script>
+</body>
+</html>

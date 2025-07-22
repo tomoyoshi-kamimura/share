@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【5分でわかる】ウェブアクセシビリティ図解</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Roboto:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #f8f9fa;
+            color: #343a40;
+        }
+        .font-roboto {
+            font-family: 'Roboto', sans-serif;
+        }
+        /* スクロールアニメーション */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .scroll-reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .section-title {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+        .section-subtitle {
+            font-size: 1.125rem;
+            color: #6c757d;
+            margin-bottom: 2.5rem;
+        }
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+        .icon-box {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+        .tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+        .comparison-box {
+            border: 2px solid;
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        .advice-card {
+            border-left: 4px solid;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <div class="container mx-auto px-4 py-12 max-w-4xl">
+
+        <!-- 0. イントロダクション -->
+        <header class="text-center mb-20 scroll-reveal">
+            <div class="inline-block bg-sky-100 text-sky-800 text-sm font-bold px-4 py-2 rounded-full mb-4">
+                すべての人のためのウェブ
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4 leading-tight">
+                あなたのWebサイト、<br class="md:hidden">誰かを<span class="text-sky-600">置き去り</span>にしていませんか？
+            </h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                気づかないうちに作られている「見えない壁」。その正体と、壁を壊して橋を架ける方法を5分で図解します。
+            </p>
+        </header>
+
+        <!-- 1. アクセシビリティとは？ -->
+        <section class="mb-20 scroll-reveal">
+            <div class="card text-center">
+                <h2 class="section-title text-gray-800">そもそも「アクセシビリティ」って何？</h2>
+                <p class="section-subtitle">一言でいうと、こういうことです。</p>
+                <div class="bg-green-50 border-l-4 border-green-500 p-6 rounded-lg max-w-3xl mx-auto">
+                    <p class="text-xl md:text-2xl font-bold text-green-800">
+                        年齢や身体の能力、利用環境にかかわらず、<br>誰もがウェブの情報やサービスを<span class="underline decoration-wavy decoration-green-600">スムーズに利用できる</span>状態のこと。
+                    </p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8 mt-12 text-left">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <div class="icon-box bg-blue-100">
+                            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2 text-center">視覚の特性</h3>
+                        <p class="text-sm text-gray-600">全盲やロービジョンの方、色の区別がつきにくい方でも、画面の情報を正しく理解できる。</p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <div class="icon-box bg-purple-100">
+                            <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.636 18.364a9 9 0 010-12.728m2.828 9.9a5 5 0 010-7.072"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2 text-center">聴覚の特性</h3>
+                        <p class="text-sm text-gray-600">音声が聞こえなくても、動画の字幕やテキストで内容を把握できる。</p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <div class="icon-box bg-orange-100">
+                            <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 8.812a9.025 9.025 0 0112.728 0M8.812 7.188a9.025 9.025 0 010 12.728"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2 text-center">操作の特性</h3>
+                        <p class="text-sm text-gray-600">マウスが使えなくても、キーボードだけで全ての操作を完了できる。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. なぜ今、重要なのか？ -->
+        <section class="mb-20 scroll-reveal">
+            <div class="card flex flex-col md:flex-row items-center gap-8">
+                <div class="flex-shrink-0">
+                    <div class="icon-box bg-red-100 !w-24 !h-24">
+                        <svg class="!w-12 !h-12 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                </div>
+                <div>
+                    <h2 class="section-title text-gray-800 !text-3xl">なぜ今、対応が必要なの？</h2>
+                    <p class="text-gray-600 mb-4">以前は「努力義務」でしたが、法改正（障害者差別解消法）により、<span class="font-bold">事業者による「合理的配慮の提供」が法的義務</span>になりました。</罰則はなくても、対応しないことは事業リスクになり得ます。</p>
+                    <div class="flex items-center gap-4 p-4 bg-yellow-50 rounded-lg">
+                        <div class="flex-shrink-0">
+                             <svg class="w-8 h-8 text-yellow-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <p class="text-yellow-900"><span class="font-bold">「努力目標」</span>の時代は終わり、<span class="font-bold text-red-600">「やらなければならない義務」</span>の時代へ。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 3. 具体例で見る「見えない壁」 -->
+        <section class="mb-20 scroll-reveal">
+            <h2 class="section-title text-center text-gray-800">具体例で見る「見えない壁」とその壊し方</h2>
+            <p class="section-subtitle text-center">ほんの少しの工夫で、世界は大きく変わります。</p>
+
+            <!-- ケース1: 画像の情報 -->
+            <div class="card">
+                <div class="tag bg-blue-100 text-blue-800 mb-4">ケース1：画像の情報が伝わらない</div>
+                <h3 class="font-bold text-2xl mb-4">写真や図が、ただの「無」になってしまう壁</h3>
+                <p class="text-gray-600 mb-6">視覚に頼れないユーザーは、「画面読み上げソフト」を使って情報を得ます。画像に「代替テキスト（alt属性）」がないと、そこに何があるのか全く伝わりません。</p>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="comparison-box border-red-300 bg-red-50">
+                        <h4 class="font-bold text-lg mb-2 text-red-700 flex items-center">
+                            <span>壁がある状態</span>
+                            <svg class="w-6 h-6 ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>
+                        </h4>
+                        <img src="https://placehold.co/400x250/f87171/ffffff?text=Coffee+Photo" alt="" class="rounded-md mb-3 w-full">
+                        <p class="font-mono text-sm bg-white p-3 rounded">
+                            <span class="text-gray-500">&lt;img src="..." <span class="text-red-600 font-bold">alt=""</span>&gt;</span><br><br>
+                            <span class="font-sans font-bold text-red-700">読み上げ：「画像」</span>
+                        </p>
+                    </div>
+                    <div class="comparison-box border-green-300 bg-green-50">
+                        <h4 class="font-bold text-lg mb-2 text-green-700 flex items-center">
+                            <span>壁を壊した状態</span>
+                            <svg class="w-6 h-6 ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                        </h4>
+                        <img src="https://placehold.co/400x250/4ade80/ffffff?text=Coffee+Photo" alt="ラテアートが施された温かいカフェラテ" class="rounded-md mb-3 w-full">
+                        <p class="font-mono text-sm bg-white p-3 rounded">
+                            <span class="text-gray-500">&lt;img src="..." <span class="text-green-600 font-bold">alt="ラテアートが施された温かいカフェラテ"</span>&gt;</span><br><br>
+                            <span class="font-sans font-bold text-green-700">読み上げ：「ラテアートが施された温かいカフェラテ」</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ケース2: キーボード操作 -->
+            <div class="card">
+                <div class="tag bg-purple-100 text-purple-800 mb-4">ケース2：キーボードで操作できない</div>
+                <h3 class="font-bold text-2xl mb-4">クリックできず、先に進めない壁</h3>
+                <p class="text-gray-600 mb-6">病気や怪我でマウスが使えない人は、キーボードのTabキーでリンクやボタンを移動します。キーボードで操作できないサイトは、彼らにとって「行き止まり」と同じです。</p>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="comparison-box border-red-300 bg-red-50">
+                        <h4 class="font-bold text-lg mb-2 text-red-700 flex items-center">
+                            <span>壁がある状態</span>
+                            <svg class="w-6 h-6 ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>
+                        </h4>
+                        <div class="p-6 text-center">
+                            <p class="mb-4">Tabキーを押しても<br>ボタンが選択されない…</p>
+                            <button class="bg-gray-300 text-gray-500 px-6 py-2 rounded-lg cursor-not-allowed">申込む</button>
+                        </div>
+                    </div>
+                    <div class="comparison-box border-green-300 bg-green-50">
+                        <h4 class="font-bold text-lg mb-2 text-green-700 flex items-center">
+                            <span>壁を壊した状態</span>
+                             <svg class="w-6 h-6 ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                        </h4>
+                        <div class="p-6 text-center">
+                            <p class="mb-4">Tabキーで選択でき、<br>Enterキーで押せる！</p>
+                            <button class="bg-blue-600 text-white px-6 py-2 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-300">申込む</button>
+                        </div>
+                    </div>
+                </div>
+                 <p class="text-xs text-gray-500 mt-4">※これは視覚的なデモです。実際の対応では、HTMLの構造やJavaScriptを適切に記述する必要があります。</p>
+            </div>
+
+            <!-- ケース3: 色のコントラスト -->
+            <div class="card">
+                <div class="tag bg-orange-100 text-orange-800 mb-4">ケース3：色のコントラストが低い</div>
+                <h3 class="font-bold text-2xl mb-4">文字が背景に溶けて、読めない壁</h3>
+                <p class="text-gray-600 mb-6">ロービジョンの方や高齢者、または単に屋外の明るい場所でスマホを見ている人にとって、文字と背景のコントラストが低いと情報は存在しないのと同じです。</p>
+                 <div class="grid md:grid-cols-2 gap-6">
+                    <div class="comparison-box border-red-300 bg-red-50">
+                        <h4 class="font-bold text-lg mb-2 text-red-700 flex items-center">
+                           <span>壁がある状態</span>
+                           <svg class="w-6 h-6 ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>
+                        </h4>
+                        <div class="p-6 rounded-lg" style="background-color: #a5f3fc;">
+                            <p style="color: #e0f2fe;">重要な情報がここに書かれていますが、非常に読みにくいです。</p>
+                            <p class="text-center mt-4"><span class="font-bold text-red-700">コントラスト比: 1.25</span></p>
+                        </div>
+                    </div>
+                    <div class="comparison-box border-green-300 bg-green-50">
+                        <h4 class="font-bold text-lg mb-2 text-green-700 flex items-center">
+                            <span>壁を壊した状態</span>
+                            <svg class="w-6 h-6 ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                        </h4>
+                        <div class="p-6 rounded-lg" style="background-color: #a5f3fc;">
+                            <p style="color: #083344;">重要な情報がここに書かれています。これならはっきり読めます。</p>
+                            <p class="text-center mt-4"><span class="font-bold text-green-700">コントラスト比: 7.93</span></p>
+                        </div>
+                    </div>
+                </div>
+                 <p class="text-xs text-gray-500 mt-4">※世界共通のルールブック(WCAG)では、通常テキストで4.5:1以上のコントラスト比が推奨されています。</p>
+            </div>
+        </section>
+
+        <!-- 4. 実践ガイド -->
+        <section class="mb-20 scroll-reveal">
+            <h2 class="section-title text-center text-gray-800">わかった、でも何から始める？</h2>
+            <p class="section-subtitle text-center">大丈夫。すべてを一度にやる必要はありません。まずはここから。</p>
+            <div class="space-y-6">
+                <div class="card">
+                    <h3 class="font-bold text-xl mb-3 text-sky-700">Q. 予算もリソースも限られています。最優先は？</h3>
+                    <p class="text-gray-700">A. まずは「重大な影響」を及ぼすバリアから取り除きましょう。以下の順番がオススメです。</p>
+                    <ol class="list-decimal list-inside mt-4 space-y-2 text-gray-800">
+                        <li><span class="font-bold">キーボードだけで全ての操作が終わるか</span>の確認。これができないと、サイトが全く使えない人が出てきます。</li>
+                        <li><span class="font-bold">画像や動画に代替情報（altや字幕）があるか</span>の確認。情報が全く伝わらない状況を防ぎます。</li>
+                        <li><span class="font-bold">色のコントラストが十分か</span>の確認。情報が読めない、という事態を避けます。</li>
+                    </ol>
+                </div>
+                <div class="card">
+                    <h3 class="font-bold text-xl mb-3 text-sky-700">Q. 効率化できる便利なツールは？</h3>
+                    <p class="text-gray-700">A. 自動チェックツールを活用し、効率的に問題点を見つけましょう。ただし、ツールは万能ではないので、最後は人の目と手での確認が重要です。</p>
+                    <ul class="list-disc list-inside mt-4 space-y-2 text-gray-800">
+                        <li><span class="font-bold">axe DevTools:</span> Google Chromeの拡張機能。問題箇所と修正方法を具体的に示してくれます。</li>
+                        <li><span class="font-bold">Lighthouse:</span> Google Chromeの開発者ツールに内蔵。パフォーマンス等と一緒にアクセシビリティも診断できます。</li>
+                        <li><span class="font-bold">コントラストチェッカー:</span> 配色を決めるデザイン段階で、コントラスト比を確認するツール。</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. チームで乗り越える -->
+        <section class="mb-20 scroll-reveal">
+            <h2 class="section-title text-center text-gray-800">チームで壁を乗り越えるためのヒント</h2>
+            <p class="section-subtitle text-center">アクセシビリティは一人で抱えるものではありません。あるディレクターの経験談から学びましょう。</p>
+            <div class="space-y-8">
+                <div class="card advice-card border-orange-400">
+                    <h3 class="font-bold text-xl mb-3 text-orange-800">アドバイス1：最初に「共通の地図」を用意する</h3>
+                    <p class="text-gray-600 mb-4"><strong>経験談：</strong>開発者の見積もり用Excelをそのまま課題管理に使ったら、ファイルがいくつも生まれ、最新版がどれか不明に。誰が何を担当し、状況がどうなっているのか、誰も全体を把握できなくなりました。</p>
+                    <div class="bg-green-50 border border-green-200 p-4 rounded-lg flex items-start">
+                        <div class="flex-shrink-0">
+                            <svg class="w-6 h-6 mr-3 text-green-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 2a1 1 0 00-1 1v1a1 1 0 002 0V3a1 1 0 00-1-1zM4 10a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm14 0a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM10 16a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM4.343 4.343a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414zm11.314 11.314a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414zM4.343 15.657a1 1 0 010-1.414l.707-.707a1 1 0 111.414 1.414l-.707.707a1 1 0 01-1.414 0zm11.314-11.314a1 1 0 010-1.414l.707-.707a1 1 0 011.414 1.414l-.707.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                <path fill-rule="evenodd" d="M10 4a6 6 0 100 12 6 6 0 000-12zM8 10a2 2 0 114 0 2 2 0 01-4 0z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="font-bold text-green-800">解決策</p>
+                            <p class="text-green-700">プロジェクト開始時に、<span class="font-bold">担当者・ステータス・確認事項などを盛り込んだ共通の管理フォーマット</span>を準備し、チーム全員で合意する。これだけで後の混乱を劇的に防げます。</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card advice-card border-purple-400">
+                    <h3 class="font-bold text-xl mb-3 text-purple-800">アドバイス2：タスクを「管理しやすい単位」にまとめる</h3>
+                    <p class="text-gray-600 mb-4"><strong>経験談：</strong>「alt修正」のような機能単位でタスクを管理するか、「トップページ修正」のような画面単位で管理するか方針が曖昧なまま進めた結果、進捗の整理がつかず、クライアントへの報告が2週間も遅れてしまいました。</p>
+                    <div class="bg-green-50 border border-green-200 p-4 rounded-lg flex items-start">
+                        <div class="flex-shrink-0">
+                           <svg class="w-6 h-6 mr-3 text-green-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 2a1 1 0 00-1 1v1a1 1 0 002 0V3a1 1 0 00-1-1zM4 10a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm14 0a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM10 16a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM4.343 4.343a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414zm11.314 11.314a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414zM4.343 15.657a1 1 0 010-1.414l.707-.707a1 1 0 111.414 1.414l-.707.707a1 1 0 01-1.414 0zm11.314-11.314a1 1 0 010-1.414l.707-.707a1 1 0 011.414 1.414l-.707.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                <path fill-rule="evenodd" d="M10 4a6 6 0 100 12 6 6 0 000-12zM8 10a2 2 0 114 0 2 2 0 01-4 0z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="font-bold text-green-800">解決策</p>
+                            <p class="text-green-700">初期段階で修正項目を洗い出し、<span class="font-bold">「トップページの画像alt」のようにグルーピングして構造化</span>する。管理しやすい単位に整えることで、手戻りや報告遅延のリスクを減らせます。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. まとめ -->
+        <section class="text-center scroll-reveal">
+            <div class="card bg-gradient-to-br from-sky-500 to-indigo-600 text-white">
+                <h2 class="text-3xl font-bold mb-4">アクセシビリティは「文化」である</h2>
+                <p class="text-lg opacity-90 mb-6">一部の専門家だけが頑張るのではなく、ディレクター、デザイナー、エンジニア、企画担当者…<br>関わる全員が<span class="font-bold underline decoration-wavy">「自分ごと」</span>として捉えることが、本当のアクセシビリティを実現する鍵です。</p>
+                <p class="text-lg font-bold">それは「コスト」ではなく、より多くの人に価値を届け、プロダクトの品質を高める「投資」なのです。</p>
+            </div>
+        </section>
+
+        <!-- 7. 出典 -->
+        <footer class="mt-16 pt-8 border-t text-center text-sm text-gray-500 scroll-reveal">
+            <h3 class="font-bold text-base text-gray-700 mb-2">情報ソース</h3>
+            <p>この図解は、いただいたQ&A情報と以下の公的資料を参考に作成しました。</p>
+            <a href="https://www8.cao.go.jp/shougai/suishin/sabekai/kihonhoushin/r05/pdf/honbun.pdf" target="_blank" rel="noopener noreferrer" class="text-sky-600 hover:underline">
+                障害を理由とする差別の解消の推進に関する基本方針 (内閣府)
+            </a>
+        </footer>
+    </div>
+
+    <script>
+        // スクロールに応じた表示アニメーション
+        const scrollRevealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.scroll-reveal').forEach(el => {
+            scrollRevealObserver.observe(el);
+        });
+    </script>
+</body>
+</html>
