@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webディレクター向け社内ポータルサイト・プロトタイプ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .lucide {
+            width: 1em;
+            height: 1em;
+            stroke-width: 2;
+        }
+        /* カスタムスクロールバー */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9; /* slate-100 */
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; /* slate-300 */
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; /* slate-400 */
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <!-- ヘッダー：検索ファーストの思想を反映 -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- サイトロゴ -->
+                <div class="flex items-center space-x-3">
+                    <div class="bg-slate-800 p-2 rounded-lg">
+                        <i data-lucide="hexagon" class="text-white"></i>
+                    </div>
+                    <h1 class="text-xl font-bold text-slate-800">Center of Excellence</h1>
+                </div>
+
+                <!-- 中央の検索バー -->
+                <div class="flex-1 flex justify-center px-2 lg:ml-6 lg:justify-end">
+                    <div class="max-w-lg w-full lg:max-w-xs">
+                        <label for="search" class="sr-only">検索</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i data-lucide="search" class="text-slate-400"></i>
+                            </div>
+                            <input id="search" name="search" class="block w-full pl-10 pr-3 py-2 border border-slate-300 rounded-md leading-5 bg-white placeholder-slate-500 focus:outline-none focus:placeholder-slate-400 focus:ring-1 focus:ring-slate-500 focus:border-slate-500 sm:text-sm" placeholder="テンプレート、プロンプト、用語を検索..." type="search">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ユーザー情報 -->
+                <div class="flex items-center space-x-4">
+                     <button class="p-2 rounded-full text-slate-500 hover:bg-slate-100 hover:text-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500">
+                        <i data-lucide="bell"></i>
+                    </button>
+                    <div class="flex items-center space-x-2">
+                        <img class="h-8 w-8 rounded-full" src="https://placehold.co/32x32/e2e8f0/64748b?text=A" alt="ユーザーアバター">
+                        <span class="text-sm font-medium hidden md:block">田中 太郎</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ナビゲーション -->
+    <nav class="bg-white border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-center space-x-8 h-12">
+                <a href="#phase-requirements" class="flex items-center text-sm font-medium text-slate-600 hover:text-slate-900"><i data-lucide="file-check-2" class="mr-2"></i>要件定義</a>
+                <a href="#phase-design" class="flex items-center text-sm font-medium text-slate-600 hover:text-slate-900"><i data-lucide="pencil-ruler" class="mr-2"></i>設計</a>
+                <a href="#phase-development" class="flex items-center text-sm font-medium text-slate-600 hover:text-slate-900"><i data-lucide="code-2" class="mr-2"></i>開発</a>
+                <a href="#phase-testing" class="flex items-center text-sm font-medium text-slate-600 hover:text-slate-900"><i data-lucide="shield-check" class="mr-2"></i>試験</a>
+                <a href="#resources" class="flex items-center text-sm font-medium text-slate-600 hover:text-slate-900"><i data-lucide="package" class="mr-2"></i>リソース</a>
+                <a href="#community" class="flex items-center text-sm font-medium text-slate-600 hover:text-slate-900"><i data-lucide="users" class="mr-2"></i>コミュニティ</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- メインコンテンツ -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- 左カラム：主要コンテンツ -->
+            <div class="lg:col-span-2 space-y-8">
+
+                <!-- AIプロンプトライブラリ -->
+                <section id="ai-prompts">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-bold flex items-center"><i data-lucide="brain-circuit" class="mr-3 text-slate-500"></i>AIプロンプトライブラリ</h2>
+                        <button class="flex items-center text-sm font-medium bg-white border border-slate-300 text-slate-700 px-3 py-1.5 rounded-md hover:bg-slate-50">
+                            <i data-lucide="plus" class="mr-1.5 h-4 w-4"></i>プロンプトを投稿
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- プロンプトカード -->
+                        <div class="bg-white p-4 rounded-lg border border-slate-200 hover:shadow-md transition-shadow">
+                            <h3 class="font-bold text-slate-900">ペルソナ分析プロンプト</h3>
+                            <p class="text-sm text-slate-600 mt-1 mb-3">指定されたサービスや製品のターゲットユーザーペルソナを多角的に生成します。</p>
+                            <div class="flex justify-between items-center">
+                                <div class="flex space-x-2">
+                                    <span class="text-xs bg-sky-100 text-sky-800 px-2 py-0.5 rounded-full">マーケティング</span>
+                                    <span class="text-xs bg-teal-100 text-teal-800 px-2 py-0.5 rounded-full">企画</span>
+                                </div>
+                                <button onclick="copyToClipboard('ここにペルソナ分析のプロンプト全文が入ります')" class="p-2 rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-600">
+                                    <i data-lucide="copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- プロンプトカード -->
+                        <div class="bg-white p-4 rounded-lg border border-slate-200 hover:shadow-md transition-shadow">
+                            <h3 class="font-bold text-slate-900">SQLクエリ生成プロンプト</h3>
+                            <p class="text-sm text-slate-600 mt-1 mb-3">自然言語で要件を伝えることで、分析用のSQLクエリを自動生成します。</p>
+                            <div class="flex justify-between items-center">
+                                <div class="flex space-x-2">
+                                    <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full">データ分析</span>
+                                    <span class="text-xs bg-rose-100 text-rose-800 px-2 py-0.5 rounded-full">エンジニア連携</span>
+                                </div>
+                                <button onclick="copyToClipboard('ここにSQLクエリ生成のプロンプト全文が入ります')" class="p-2 rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-600">
+                                    <i data-lucide="copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- リソースハブ（テンプレート＆リンク集） -->
+                <section id="resources">
+                     <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-bold flex items-center"><i data-lucide="folder-kanban" class="mr-3 text-slate-500"></i>リソースハブ</h2>
+                        <button class="flex items-center text-sm font-medium bg-white border border-slate-300 text-slate-700 px-3 py-1.5 rounded-md hover:bg-slate-50">
+                            <i data-lucide="plus" class="mr-1.5 h-4 w-4"></i>リソースを提案
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- リソースカード：テンプレート -->
+                        <div class="bg-white p-4 rounded-lg border border-slate-200 flex flex-col items-center text-center hover:shadow-md transition-shadow">
+                            <i data-lucide="file-text" class="h-10 w-10 text-blue-500 mb-2"></i>
+                            <h3 class="font-bold text-slate-900">要件定義書</h3>
+                            <p class="text-xs text-slate-500 mb-3">Word形式</p>
+                            <button class="w-full text-sm font-medium bg-slate-800 text-white px-3 py-1.5 rounded-md hover:bg-slate-700">ダウンロード</button>
+                        </div>
+                        <!-- リソースカード：テンプレート -->
+                        <div class="bg-white p-4 rounded-lg border border-slate-200 flex flex-col items-center text-center hover:shadow-md transition-shadow">
+                            <i data-lucide="gantt-chart-square" class="h-10 w-10 text-green-500 mb-2"></i>
+                            <h3 class="font-bold text-slate-900">プロジェクト計画書</h3>
+                            <p class="text-xs text-slate-500 mb-3">Excel形式</p>
+                            <button class="w-full text-sm font-medium bg-slate-800 text-white px-3 py-1.5 rounded-md hover:bg-slate-700">ダウンロード</button>
+                        </div>
+                        <!-- リソースカード：リンク -->
+                        <div class="bg-white p-4 rounded-lg border border-slate-200 flex flex-col items-center text-center hover:shadow-md transition-shadow">
+                            <i data-lucide="book-open-check" class="h-10 w-10 text-purple-500 mb-2"></i>
+                            <h3 class="font-bold text-slate-900">UI/UXデザイン集</h3>
+                            <p class="text-xs text-slate-500 mb-3">外部リンク</p>
+                            <button class="w-full text-sm font-medium bg-slate-800 text-white px-3 py-1.5 rounded-md hover:bg-slate-700">アクセス</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- コミュニティフォーラム -->
+                <section id="community">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-bold flex items-center"><i data-lucide="message-square-plus" class="mr-3 text-slate-500"></i>コミュニティフォーラム</h2>
+                        <a href="#" class="text-sm font-medium text-slate-600 hover:text-slate-900">すべて表示 →</a>
+                    </div>
+                    <div class="bg-white rounded-lg border border-slate-200">
+                        <ul class="divide-y divide-slate-200">
+                            <li class="p-4 hover:bg-slate-50 flex items-center justify-between">
+                                <div>
+                                    <p class="font-medium text-slate-900">クライアントからの急な仕様変更、どう対応してる？</p>
+                                    <p class="text-sm text-slate-500 mt-1">投稿者: 鈴木 一郎 | 3時間前</p>
+                                </div>
+                                <div class="flex items-center text-sm text-slate-500">
+                                    <i data-lucide="message-circle" class="mr-1.5 h-4 w-4"></i> 5
+                                </div>
+                            </li>
+                            <li class="p-4 hover:bg-slate-50 flex items-center justify-between">
+                                <div>
+                                    <p class="font-medium text-slate-900">【情報共有】最近見つけた便利なAI校正ツール</p>
+                                    <p class="text-sm text-slate-500 mt-1">投稿者: 佐藤 花子 | 1日前</p>
+                                </div>
+                                <div class="flex items-center text-sm text-slate-500">
+                                    <i data-lucide="message-circle" class="mr-1.5 h-4 w-4"></i> 12
+                                </div>
+                            </li>
+                             <li class="p-4 hover:bg-slate-50 flex items-center justify-between">
+                                <div>
+                                    <p class="font-medium text-slate-900">エンジニアに正確に意図を伝えるためのワイヤーフレームの書き方</p>
+                                    <p class="text-sm text-slate-500 mt-1">投稿者: 高橋 大輔 | 2日前</p>
+                                </div>
+                                <div class="flex items-center text-sm text-slate-500">
+                                    <i data-lucide="message-circle" class="mr-1.5 h-4 w-4"></i> 8
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- 右カラム：ニュース、FAQなど -->
+            <div class="space-y-8">
+                <!-- 最新ニュース -->
+                <section id="news">
+                    <h2 class="text-xl font-bold mb-4 flex items-center"><i data-lucide="newspaper" class="mr-3 text-slate-500"></i>最新ニュース</h2>
+                    <div class="space-y-4">
+                        <div class="bg-white p-4 rounded-lg border border-slate-200">
+                            <p class="text-sm text-slate-500">2025/07/23</p>
+                            <a href="#" class="font-medium text-slate-900 hover:text-blue-600">Google、次世代生成AIモデル「Gemini 3.0」を発表</a>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg border border-slate-200">
+                            <p class="text-sm text-slate-500">2025/07/22</p>
+                            <a href="#" class="font-medium text-slate-900 hover:text-blue-600">Webサイトのアクセシビリティ基準WCAG 2.2の適用が本格化</a>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg border border-slate-200">
+                            <p class="text-sm text-slate-500">2025/07/20</p>
+                            <a href="#" class="font-medium text-slate-900 hover:text-blue-600">YouTube動画：5分でわかる最新フロントエンド技術トレンド</a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ナレッジセンター -->
+                <section id="knowledge-base">
+                    <h2 class="text-xl font-bold mb-4 flex items-center"><i data-lucide="help-circle" class="mr-3 text-slate-500"></i>ナレッジセンター</h2>
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 space-y-3">
+                        <a href="#" class="flex items-center text-slate-700 hover:text-slate-900 font-medium group">
+                            <i data-lucide="book-marked" class="mr-3 text-slate-500 group-hover:text-slate-700"></i>
+                            <span>用語集</span>
+                            <i data-lucide="arrow-right" class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                        </a>
+                        <div class="border-t border-slate-200"></div>
+                        <a href="#" class="flex items-center text-slate-700 hover:text-slate-900 font-medium group">
+                            <i data-lucide="life-buoy" class="mr-3 text-slate-500 group-hover:text-slate-700"></i>
+                            <span>よくある質問 (FAQ)</span>
+                            <i data-lucide="arrow-right" class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                        </a>
+                         <div class="border-t border-slate-200"></div>
+                        <a href="#" class="flex items-center text-slate-700 hover:text-slate-900 font-medium group">
+                            <i data-lucide="graduation-cap" class="mr-3 text-slate-500 group-hover:text-slate-700"></i>
+                            <span>ディレクターの失敗談と教訓</span>
+                            <i data-lucide="arrow-right" class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                        </a>
+                    </div>
+                </section>
+            </div>
+
+        </div>
+    </main>
+    
+    <!-- フッター -->
+    <footer class="bg-white border-t border-slate-200 mt-12">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-sm text-slate-500">
+            <p>&copy; 2025 Your Company Name. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- クリップボードコピー機能のトースト通知 -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white px-4 py-2 rounded-md shadow-lg opacity-0 transition-opacity duration-300">
+        コピーしました！
+    </div>
+
+    <script>
+        // Lucide 아이콘 초기화
+        lucide.createIcons();
+
+        // クリップボードにコピーする機能
+        function copyToClipboard(text) {
+            // execCommandは非推奨ですが、iframe環境での互換性のために使用します
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast();
+            } catch (err) {
+                console.error('コピーに失敗しました', err);
+            }
+            document.body.removeChild(textArea);
+        }
+
+        // トースト通知を表示する機能
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.remove('opacity-0');
+            setTimeout(() => {
+                toast.classList.add('opacity-0');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
