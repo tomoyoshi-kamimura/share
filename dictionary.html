@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【図解】5分でわかる！AI議事録をみんなで育てる『社内共通辞書』の使い方</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+        }
+        .hero-title {
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .step-card::before {
+            content: attr(data-step);
+            position: absolute;
+            top: -2rem;
+            left: -2rem;
+            width: 4rem;
+            height: 4rem;
+            background-color: #f0f9ff; /* light-blue-50 */
+            color: #0284c7; /* sky-700 */
+            border-radius: 9999px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.875rem; /* 3xl */
+            font-weight: 900;
+            z-index: 0;
+            border: 4px solid white;
+        }
+        .flow-arrow {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #e0e7ff; /* indigo-200 */
+        }
+        .ok-ng-card {
+            border-left-width: 4px;
+        }
+        .ok-card {
+            border-left-color: #22c55e; /* green-500 */
+        }
+        .ng-card {
+            border-left-color: #ef4444; /* red-500 */
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <div class="max-w-4xl mx-auto p-4 md:p-8">
+
+        <!-- 0. Hero Section -->
+        <header class="text-center py-12 md:py-20">
+            <div class="inline-block bg-sky-100 text-sky-800 text-sm font-bold px-4 py-1 rounded-full mb-4">
+                AI議事録 精度向上プロジェクト
+            </div>
+            <h1 class="hero-title text-4xl md:text-6xl font-black text-slate-900 leading-tight">
+                <span class="bg-gradient-to-r from-sky-500 to-indigo-500 bg-clip-text text-transparent">AI議事録</span>をみんなで育てる<br>『社内共通辞書』へようこそ
+            </h1>
+            <p class="mt-6 max-w-2xl mx-auto text-lg text-slate-600">
+                議事録の修正、もうやめませんか？<br>
+                1人5分の「単語登録」で、未来の全メンバーの作業時間を削減しましょう。
+            </p>
+        </header>
+
+        <!-- 1. Why: なぜやるのか？ -->
+        <section class="py-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-slate-900">「またこの単語、間違ってる…」</h2>
+                <p class="mt-4 text-lg text-slate-600">そんな議事録の修正作業、実は<span class="font-bold text-sky-600">AIを育てる</span>ことで解決できます。</p>
+            </div>
+
+            <div class="bg-white p-8 rounded-2xl shadow-lg flex flex-col md:flex-row items-center gap-8">
+                <div class="w-full md:w-1/2">
+                    <h3 class="text-2xl font-bold text-slate-900 mb-4">AIが賢くなる仕組み</h3>
+                    <p class="text-slate-700 leading-relaxed">
+                        AIは、私たちが使う専門用語や社内の固有名詞、<strong class="text-sky-600">特に「略語」や「通称」</strong>を知りません。だから、聞き慣れない言葉を似た響きの別の言葉に変換してしまうのです。
+                        <br><br>
+                        「社内共通辞書」は、いわば <strong class="text-sky-600">AIにとっての単語帳</strong>。
+                        みんなでこの単語帳に<strong class="text-sky-600">実際に話している言葉</strong>と読み方を教えてあげることで、AIはどんどん賢くなり、文字起こしの精度が劇的に向上します。
+                    </p>
+                </div>
+                <div class="w-full md:w-1/2 flex justify-center items-center p-4">
+                    <!-- Flow Diagram -->
+                    <div class="flex items-center gap-2 md:gap-4 w-full">
+                         <div class="text-center">
+                            <svg class="w-16 h-16 mx-auto text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                            <p class="text-sm mt-2 font-bold">音声データ</p>
+                        </div>
+                        <svg class="w-8 h-8 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        <div class="text-center">
+                            <div class="relative">
+                                <svg class="w-16 h-16 mx-auto text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                <svg class="absolute -bottom-4 -right-4 w-10 h-10 text-sky-500 bg-white rounded-full p-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v11.494m-9-5.747h18"></path></svg>
+                            </div>
+                            <p class="text-sm mt-2 font-bold">AI + <span class="text-sky-600">共通辞書</span></p>
+                        </div>
+                        <svg class="w-8 h-8 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        <div class="text-center">
+                            <svg class="w-16 h-16 mx-auto text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <p class="text-sm mt-2 font-bold">正確な議事録</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. How: 登録フロー -->
+        <section class="py-16 bg-sky-50 rounded-2xl my-16">
+            <div class="max-w-4xl mx-auto px-4">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-bold text-slate-900">登録はかんたん3ステップ！</h2>
+                    <p class="mt-4 text-lg text-slate-600">慣れれば1分もかかりません。誤変換に気づいたら、すぐに登録しましょう。</p>
+                </div>
+
+                <div class="relative">
+                    <!-- Step 1 -->
+                    <div class="relative mb-24 p-8 bg-white rounded-2xl shadow-lg step-card" data-step="1">
+                        <div class="flex flex-col md:flex-row items-center gap-6">
+                            <div class="flex-shrink-0">
+                                <svg class="w-20 h-20 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-slate-900">見つける</h3>
+                                <p class="mt-2 text-slate-700">AIが作成した議事録で、誤変換されている単語や、うまく認識されなかった固有名詞（人名、プロジェクト名、<strong class="text-sky-600">略語</strong>など）を見つけます。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow -bottom-10 h-16 w-16">
+                        <svg class="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 17l-4 4m0 0l-4-4m4 4V3"></path></svg>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="relative mb-24 p-8 bg-white rounded-2xl shadow-lg step-card" data-step="2">
+                        <div class="flex flex-col md:flex-row items-center gap-6">
+                            <div class="flex-shrink-0">
+                                <svg class="w-20 h-20 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-slate-900">確認する</h3>
+                                <p class="mt-2 text-slate-700">「社内共通辞書」のスプレッドシートを開き、<strong class="text-sky-600">すでに同じ単語が登録されていないか</strong>を検索機能（Ctrl+F や ⌘+F）で確認します。重複登録は避けましょう。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flow-arrow -bottom-10 h-16 w-16">
+                         <svg class="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 17l-4 4m0 0l-4-4m4 4V3"></path></svg>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="relative p-8 bg-white rounded-2xl shadow-lg step-card" data-step="3">
+                        <div class="flex flex-col md:flex-row items-center gap-6">
+                            <div class="flex-shrink-0">
+                                <svg class="w-20 h-20 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-slate-900">登録する</h3>
+                                <p class="mt-2 text-slate-700">重複がなければ、新しい行に単語の情報を入力します。<strong class="text-sky-600">「単語」「よみ」「分類」「備考」</strong>が重要です。</p>
+                                <div class="mt-4 p-4 bg-slate-100 rounded-lg overflow-x-auto">
+                                    <p class="text-sm text-slate-500 mb-2">入力例：</p>
+                                    <table class="w-full text-sm">
+                                        <thead class="bg-slate-200">
+                                            <tr>
+                                                <th class="p-2 text-left font-bold">単語（略称OK）</th>
+                                                <th class="p-2 text-left font-bold">よみ（ひらがな）</th>
+                                                <th class="p-2 text-left font-bold">分類</th>
+                                                <th class="p-2 text-left font-bold">備考</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="bg-white">
+                                                <td class="p-2 border-t">プロシスタ</td>
+                                                <td class="p-2 border-t">ぷろしすた</td>
+                                                <td class="p-2 border-t">社内用語など</td>
+                                                <td class="p-2 border-t">「プロシスタ株式会社」の通称</td>
+                                            </tr>
+                                            <tr class="bg-white">
+                                                <td class="p-2 border-t">PS</td>
+                                                <td class="p-2 border-t">ぴーえす</td>
+                                                <td class="p-2 border-t">社内用語など</td>
+                                                <td class="p-2 border-t">「プロシスタ」の略称</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Rule: 登録ルール -->
+        <section class="py-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-slate-900">これだけは守って！登録の重要ルール</h2>
+                <p class="mt-4 text-lg text-slate-600">辞書の品質を保つため、ご協力をお願いします。</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- OK Rules -->
+                <div class="bg-green-50 p-6 rounded-2xl ok-ng-card ok-card">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg mr-3">✔</div>
+                        <h3 class="text-2xl font-bold text-green-800">OKな登録</h3>
+                    </div>
+                    <ul class="space-y-4 list-inside text-green-900">
+                        <li><strong>普段使う「略語」や「通称」を登録</strong><br><span class="text-sm text-slate-600">実際に話されている言葉を登録するのが一番効果的です。正式名称も別に登録しましょう。</span></li>
+                        <li><strong>「よみ」は全てひらがなで</strong><br><span class="text-sm text-slate-600">AIの認識精度に直結する最重要ポイントです！例：「ぷろしすた」</span></li>
+                        <li><strong>「備考」に補足情報を書く</strong><br><span class="text-sm text-slate-600">後から見た人が分かるように、正式名称や使用例などを補足しましょう。</span></li>
+                    </ul>
+                </div>
+                <!-- NG Rules -->
+                <div class="bg-red-50 p-6 rounded-2xl ok-ng-card ng-card">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg mr-3">✖</div>
+                        <h3 class="text-2xl font-bold text-red-800">NGな登録</h3>
+                    </div>
+                    <ul class="space-y-4 list-inside text-red-900">
+                        <li><strong>カタカナや漢字の「よみ」</strong><br><span class="text-sm text-slate-600">例：「プロシスタ」。AIが混乱してしまいます。</span></li>
+                        <li><strong>一般的すぎる単語</strong><br><span class="text-sm text-slate-600">例：「かいぎ」「ほうこく」など。これらを登録すると、逆に誤変換が増える原因になります。</span></li>
+                        <li><strong>長すぎる単語や文章</strong><br><span class="text-sm text-slate-600">辞書に登録するのは、あくまで「単語」です。フレーズや文章は登録しないでください。</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-8 bg-indigo-100 text-indigo-800 p-6 rounded-2xl text-center">
+                <p class="font-bold">特に「よみ」のルールは重要です！</p>
+                <p class="text-sm mt-1">AIは「よみ」を元に音声を判断するため、ここが間違っていると正しく変換されません。</p>
+            </div>
+        </section>
+
+        <!-- 4. Vision: 未来 -->
+        <section class="py-16 text-center">
+            <div class="max-w-2xl mx-auto px-4">
+                <svg class="w-24 h-24 mx-auto text-transparent bg-clip-text bg-gradient-to-r from-sky-500 to-indigo-500 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-12v4m-2-2h4m5 4v4m-2-2h4M5 3a2 2 0 00-2 2v1m16-3a2 2 0 012 2v1M5 21a2 2 0 01-2-2v-1m16 3a2 2 0 002-2v-1"></path></svg>
+                <h2 class="text-3xl font-bold text-slate-900">修正ゼロの未来へ。</h2>
+                <p class="mt-4 text-lg text-slate-600 leading-relaxed">
+                    この辞書は、私たち全員の共有財産です。<br>
+                    一人ひとりの少しの協力が、未来のチーム全体の大きな成果に繋がります。<br>
+                    さあ、一緒に最高のAIアシスタントを育てていきましょう！
+                </p>
+            </div>
+        </section>
+
+        <!-- 5. Action: まとめとリンク -->
+        <footer class="text-center py-12">
+            <h2 class="text-2xl font-bold text-slate-900 mb-6">さっそく辞書を育ててみよう！</h2>
+            <a href="https://docs.google.com/spreadsheets/d/1w0BKHtCH441D26x7axfpwiJxMUHGjZHc/edit?usp=drive_link&ouid=111073020162639761200&rtpof=true&sd=true" class="inline-block bg-sky-600 text-white font-bold text-xl px-10 py-4 rounded-lg shadow-lg hover:bg-sky-700 transition-transform transform hover:scale-105">
+                社内共通辞書を開く
+            </a>
+            <div class="mt-8 text-sm text-slate-500">
+                <p>※上記リンクはサンプルです。実際のスプレッドシートのURLに置き換えてください。</p>
+            </div>
+        </footer>
+    </div>
+
+</body>
+</html>
