@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>② OPA Data-Driven Growth Strategy | 統合データ分析基盤構築のご提案</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Palette Definition: Vibrant Blue & Energetic Orange -->
+    <!-- Primary: #2563EB (Blue-600) | Secondary: #F97316 (Orange-500) | Background: #F3F4F6 -->
+    <!-- Application Structure Plan:
+         1. Hero: Hook the user with the "Black Box" problem vs. the "Clear Vision".
+         2. Architecture: Visualizing the data pipeline (Red/Blue integration) using HTML/CSS Grid.
+         3. Interactive Dashboard: A tabbed interface allowing the user to experience the 4 specific views (Marketing, Ops, Tenant, Management).
+         4. Roadmap: Vertical timeline showing the partnership evolution.
+    -->
+    <!-- Visualization & Content Choices:
+         - Architecture: HTML Grid/Flex boxes. Goal: Organize. Justification: Shows the flow clearly without SVG.
+         - Marketing Chart: Stacked Bar. Goal: Compare/Relationships. Justification: Show breakdown of traffic sources vs conversion.
+         - Ops Chart: Line + Area. Goal: Change. Justification: Show growth in active users over time.
+         - Tenant Chart: Horizontal Bar. Goal: Compare/Rank. Justification: Ranking shops by content effectiveness is best read horizontally.
+         - Management Viz: Doughnut Charts. Goal: Inform. Justification: Quick view of ROI and efficiency.
+         - NO SVG / NO Mermaid used.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            background-color: #F8FAFC;
+            color: #1E293B;
+        }
+
+        /* Chart Container Styling - MANDATORY */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            height: 320px; /* Base height */
+            max-height: 400px;
+            margin: 0 auto;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Utility for transitions */
+        .transition-all-300 {
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Tab Active State */
+        .tab-btn.active {
+            background-color: #2563EB; /* Blue-600 */
+            color: white;
+            border-color: #2563EB;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Navigation / Header -->
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center text-white font-black text-xl shadow-lg">O</div>
+                    <div class="flex flex-col">
+                        <span class="font-bold text-gray-900 leading-tight">OPA DATA PROJECT</span>
+                        <span class="text-xs text-blue-600 font-medium">Integrated Growth Platform</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="hidden md:inline-block px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-bold">Phase 1 Proposal</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="bg-white pb-12 pt-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">
+                    <span class="block">集客からファン化まで。</span>
+                    <span class="block text-blue-600 mt-2">顧客行動の「全貌」を可視化する</span>
+                </h1>
+                <p class="mt-4 text-lg text-gray-500">
+                    Web（集客）とアプリ（活動）のデータ分断を解消。「手動集計」から脱却し、
+                    <br class="hidden md:inline">リアルタイムな意思決定を実現する統合データ分析基盤のご提案。
+                </p>
+                <div class="mt-8 flex justify-center gap-4">
+                    <button onclick="scrollToSection('dashboard-section')" class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full shadow-lg transition-all-300 transform hover:-translate-y-1">
+                        デモ画面を見る
+                    </button>
+                    <button onclick="scrollToSection('architecture-section')" class="px-8 py-3 bg-white text-blue-600 border border-blue-200 hover:bg-blue-50 font-bold rounded-full shadow-sm transition-all-300">
+                        仕組みを知る
+                    </button>
+                </div>
+            </div>
+
+            <!-- Key Challenges Grid -->
+            <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Challenge 1 -->
+                <div class="bg-gray-50 rounded-2xl p-8 border border-gray-100 hover:shadow-md transition-all-300 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-red-100 rounded-bl-full -mr-4 -mt-4 transition-all group-hover:bg-red-200"></div>
+                    <div class="relative z-10">
+                        <div class="text-3xl mb-4 opacity-80">🕵️‍♀️</div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">見えない費用対効果</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            Web広告で集客しても、その人が「アプリを入れたか」「来店したか」が追えず、投資判断が経験則頼みになっている。
+                        </p>
+                    </div>
+                </div>
+                <!-- Challenge 2 -->
+                <div class="bg-gray-50 rounded-2xl p-8 border border-gray-100 hover:shadow-md transition-all-300 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-gray-200 rounded-bl-full -mr-4 -mt-4 transition-all group-hover:bg-gray-300"></div>
+                    <div class="relative z-10">
+                        <div class="text-3xl mb-4 opacity-80">🐌</div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">手動集計の限界</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            週報・月報の作成に膨大な工数がかかり、分析結果が出る頃には「過去の話」。施策のPDCAが回らない。
+                        </p>
+                    </div>
+                </div>
+                <!-- Challenge 3 -->
+                <div class="bg-gray-50 rounded-2xl p-8 border border-gray-100 hover:shadow-md transition-all-300 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-blue-100 rounded-bl-full -mr-4 -mt-4 transition-all group-hover:bg-blue-200"></div>
+                    <div class="relative z-10">
+                        <div class="text-3xl mb-4 opacity-80">🧩</div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">データの分断</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            「集客データ（GA4）」と「活動データ（アプリ）」が別管理。LTV（顧客生涯価値）が見えず、優良顧客の定義が曖昧。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section id="architecture-section" class="py-16 bg-white border-t border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <span class="text-blue-600 font-bold tracking-wider uppercase text-sm">System Architecture</span>
+                <h2 class="text-3xl font-bold text-gray-900 mt-2">「集客」と「活動」を統合する仕組み</h2>
+            </div>
+
+            <!-- Diagram Container (CSS Grid) -->
+            <div class="bg-slate-900 rounded-3xl p-8 md:p-12 shadow-2xl text-white relative overflow-hidden">
+                <!-- Background Decoration -->
+                <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+                    <div class="absolute top-10 left-10 w-64 h-64 bg-blue-500 rounded-full blur-3xl"></div>
+                    <div class="absolute bottom-10 right-10 w-64 h-64 bg-orange-500 rounded-full blur-3xl"></div>
+                </div>
+
+                <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                    
+                    <!-- Source: Attraction (Red/Orange) -->
+                    <div class="lg:col-span-3 flex flex-col gap-4">
+                        <div class="bg-slate-800/50 border border-orange-500/30 p-5 rounded-xl backdrop-blur-sm">
+                            <div class="text-orange-400 font-bold mb-1 flex items-center gap-2">
+                                <span class="text-xl">📢</span> Web / 広告
+                            </div>
+                            <p class="text-xs text-slate-400 mb-3">Google Analytics 4</p>
+                            <div class="space-y-2">
+                                <div class="bg-slate-700/50 px-3 py-2 rounded text-xs">・流入経路 (Source)</div>
+                                <div class="bg-slate-700/50 px-3 py-2 rounded text-xs">・閲覧行動 (Page View)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Arrow -->
+                    <div class="lg:col-span-1 flex items-center justify-center text-slate-500 text-2xl animate-pulse transform rotate-90 lg:rotate-0">
+                        ➜
+                    </div>
+
+                    <!-- CORE: BigQuery (Blue/Purple) -->
+                    <div class="lg:col-span-4 flex flex-col justify-center">
+                        <div class="bg-gradient-to-b from-blue-900 to-slate-900 border-2 border-blue-500 p-6 rounded-2xl shadow-blue-900/50 shadow-lg text-center h-full flex flex-col justify-center">
+                            <div class="text-4xl mb-2">🗄️</div>
+                            <h3 class="text-2xl font-bold text-white mb-1">BigQuery</h3>
+                            <p class="text-blue-300 text-sm font-medium mb-4">統合データウェアハウス</p>
+                            <div class="text-xs text-slate-400 bg-slate-800/80 rounded-lg p-3 inline-block mx-auto text-left w-full">
+                                <div class="flex justify-between border-b border-slate-700 pb-1 mb-1">
+                                    <span>UserID Integration</span>
+                                    <span class="text-green-400">✓ Active</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Cross-Channel Analysis</span>
+                                    <span class="text-green-400">✓ Ready</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Arrow -->
+                    <div class="lg:col-span-1 flex items-center justify-center text-slate-500 text-2xl animate-pulse transform rotate-90 lg:rotate-0">
+                        ➜
+                    </div>
+
+                    <!-- Source: Activity (Blue) -->
+                    <div class="lg:col-span-3 flex flex-col gap-4">
+                        <div class="bg-slate-800/50 border border-blue-500/30 p-5 rounded-xl backdrop-blur-sm">
+                            <div class="text-blue-400 font-bold mb-1 flex items-center gap-2">
+                                <span class="text-xl">📱</span> アプリ / 店舗
+                            </div>
+                            <p class="text-xs text-slate-400 mb-3">AWS (Operational DB)</p>
+                            <div class="space-y-2">
+                                <div class="bg-slate-700/50 px-3 py-2 rounded text-xs">・会員ランク / ID</div>
+                                <div class="bg-slate-700/50 px-3 py-2 rounded text-xs">・マイル / クーポン利用</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Output Arrow -->
+                <div class="mt-6 flex justify-center text-slate-500 text-2xl">
+                    ⬇
+                </div>
+
+                <!-- Visualization Layer -->
+                <div class="mt-4 bg-white text-slate-900 p-4 rounded-xl text-center font-bold shadow-lg max-w-md mx-auto border-b-4 border-orange-500">
+                    📊 Real-time Dashboard (Looker Studio / Custom BI)
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section id="dashboard-section" class="py-16 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-10 text-center md:text-left">
+                <h2 class="text-3xl font-bold text-gray-900">Interactive Dashboards</h2>
+                <p class="text-gray-500 mt-2">ステークホルダーごとの「見たい数字」を即座に可視化。タブを切り替えて体験してください。</p>
+            </div>
+
+            <!-- Dashboard Controls/Tabs -->
+            <div class="flex flex-wrap gap-2 mb-8 bg-white p-2 rounded-xl shadow-sm border border-gray-200 inline-flex">
+                <button onclick="switchTab('marketing')" id="tab-marketing" class="tab-btn active px-6 py-2 rounded-lg text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-all border border-transparent">
+                    🎯 集客 (Marketing)
+                </button>
+                <button onclick="switchTab('operations')" id="tab-operations" class="tab-btn px-6 py-2 rounded-lg text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-all border border-transparent">
+                    ⚙️ 育成 (Operations)
+                </button>
+                <button onclick="switchTab('tenant')" id="tab-tenant" class="tab-btn px-6 py-2 rounded-lg text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-all border border-transparent">
+                    🛍️ テナント (Tenant)
+                </button>
+                <button onclick="switchTab('management')" id="tab-management" class="tab-btn px-6 py-2 rounded-lg text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-all border border-transparent">
+                    📈 経営 (Management)
+                </button>
+            </div>
+
+            <!-- Dashboard Content Area -->
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden min-h-[500px]">
+                
+                <!-- Marketing View -->
+                <div id="view-marketing" class="view-section p-6 md:p-8 animate-fade-in">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-1 space-y-6">
+                            <h3 class="text-xl font-bold text-gray-800 border-l-4 border-orange-500 pl-3">集客施策の「真の」効果</h3>
+                            <p class="text-sm text-gray-600 leading-relaxed">
+                                Web広告やSNSからの流入が、単にサイトを見ただけでなく、<strong>「実際にアプリをDLしたか」「会員登録したか」</strong>までを追跡します。<br><br>
+                                右のグラフは、流入経路ごとの訪問数（グレー）と、そこからのアプリDL数（オレンジ）を示しています。
+                            </p>
+                            <div class="bg-orange-50 p-4 rounded-lg border border-orange-100">
+                                <div class="text-xs font-bold text-orange-800 uppercase mb-1">Insight</div>
+                                <p class="text-sm text-orange-900 font-medium">
+                                    「店舗QR」からのDL率は圧倒的に高いが、Web広告では「Instagram」が最も効率的にアプリ会員を獲得できている。
+                                </p>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-2">
+                            <div class="chart-container">
+                                <canvas id="marketingChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Operations View -->
+                <div id="view-operations" class="view-section hidden p-6 md:p-8 animate-fade-in">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-1 space-y-6">
+                            <h3 class="text-xl font-bold text-gray-800 border-l-4 border-blue-500 pl-3">アプリ活用とファン育成</h3>
+                            <p class="text-sm text-gray-600 leading-relaxed">
+                                DL数だけでなく、<strong>「アクティブに利用しているか（MAU）」</strong>と<strong>「会員ランクの推移」</strong>をモニタリング。<br><br>
+                                キャンペーン（例：マイル2倍）実施時に、アクティブユーザーがどう反応し、ランクアップに繋がったかを検証します。
+                            </p>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-gray-50 p-3 rounded text-center">
+                                    <div class="text-xs text-gray-500">Active Rate</div>
+                                    <div class="text-xl font-bold text-blue-600">18.5%</div>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded text-center">
+                                    <div class="text-xs text-gray-500">Rank Up</div>
+                                    <div class="text-xl font-bold text-green-600">+120<span class="text-xs text-gray-400">名</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-2">
+                            <div class="chart-container">
+                                <canvas id="opsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tenant View -->
+                <div id="view-tenant" class="view-section hidden p-6 md:p-8 animate-fade-in">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-1 space-y-6">
+                            <h3 class="text-xl font-bold text-gray-800 border-l-4 border-green-500 pl-3">テナント貢献度評価</h3>
+                            <p class="text-sm text-gray-600 leading-relaxed">
+                                アプリ内のショップニュースや特集記事が、<strong>「実際の来店」</strong>にどれだけ寄与したかを可視化。<br><br>
+                                単なる「いいね数」だけでなく、記事閲覧者の週末来店率（Web to Offline）を計測し、優良テナントを発掘します。
+                            </p>
+                            <div class="bg-green-50 p-4 rounded-lg border border-green-100">
+                                <div class="text-xs font-bold text-green-800 uppercase mb-1">Action</div>
+                                <p class="text-sm text-green-900 font-medium">
+                                    Shop Aの記事は閲覧数は多いが来店率が低い。クーポン施策との併用を提案。
+                                </p>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-2">
+                            <div class="chart-container">
+                                <canvas id="tenantChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Management View -->
+                <div id="view-management" class="view-section hidden p-6 md:p-8 animate-fade-in">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white p-4 rounded-xl shadow border border-gray-100 flex flex-col items-center justify-center text-center h-40">
+                            <div class="text-sm text-gray-400 font-bold uppercase mb-2">レポート作成工数</div>
+                            <div class="text-4xl font-bold text-gray-800">0<span class="text-lg font-normal text-gray-500">h</span></div>
+                            <div class="text-xs text-green-500 font-bold bg-green-50 px-2 py-1 rounded-full mt-2">▼ 100% (完全自動化)</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow border border-gray-100 flex flex-col items-center justify-center text-center h-40">
+                            <div class="text-sm text-gray-400 font-bold uppercase mb-2">アプリ経由売上貢献</div>
+                            <div class="text-4xl font-bold text-blue-600">¥12<span class="text-lg font-normal text-gray-500">M</span></div>
+                            <div class="text-xs text-green-500 font-bold bg-green-50 px-2 py-1 rounded-full mt-2">▲ 15% YoY</div>
+                        </div>
+                        <div class="col-span-1 md:col-span-2 bg-gray-50 rounded-xl p-4 flex items-center">
+                            <div class="w-1/2 pr-4 border-r border-gray-200">
+                                <h4 class="text-sm font-bold text-gray-600 mb-2">投資対効果 (ROI)</h4>
+                                <p class="text-xs text-gray-500">
+                                    データ基盤への投資に対し、工数削減と売上向上効果が上回る分岐点を可視化。
+                                </p>
+                            </div>
+                            <div class="w-1/2 pl-4 h-32 relative">
+                                <canvas id="roiChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-800 text-white p-6 rounded-xl">
+                        <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                            <span>🚀</span> Next Strategic Steps
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                            <div class="border-l-2 border-orange-500 pl-3">
+                                <div class="font-bold text-orange-400 mb-1">Phase 1: 可視化</div>
+                                <div class="opacity-80">手動集計の撤廃とリアルタイムダッシュボードの構築</div>
+                            </div>
+                            <div class="border-l-2 border-blue-500 pl-3">
+                                <div class="font-bold text-blue-400 mb-1">Phase 2: 施策連動</div>
+                                <div class="opacity-80">分析結果に基づく「特集・キャンペーン」の企画提案</div>
+                            </div>
+                            <div class="border-l-2 border-purple-500 pl-3">
+                                <div class="font-bold text-purple-400 mb-1">Phase 3: 自動化</div>
+                                <div class="opacity-80">MAツール連携によるパーソナライズ配信の自動化</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h2 class="text-2xl font-bold mb-4">Partnering for Growth</h2>
+            <p class="text-gray-400 max-w-2xl mx-auto mb-8">
+                「運用保守」から「マーケティングパートナー」へ。<br>
+                OPA様のビジネス成長を、データと技術で伴走支援いたします。
+            </p>
+            <div class="inline-block bg-gray-800 px-6 py-3 rounded-lg text-sm text-gray-400 border border-gray-700">
+                Data-Driven Growth Project Proposal © 2026
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- Utility: Label Wrapping for Chart.js ---
+        function wrapLabel(label, maxChars = 16) {
+            if (label.length <= maxChars) return label;
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if (currentLine.length + 1 + words[i].length <= maxChars) {
+                    currentLine += ' ' + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // --- Utility: Tooltip Callback for Multiline Labels ---
+        const tooltipPlugin = {
+            tooltip: {
+                callbacks: {
+                    title: function(tooltipItems) {
+                        const item = tooltipItems[0];
+                        let label = item.chart.data.labels[item.dataIndex];
+                        if (Array.isArray(label)) {
+                            return label.join(' ');
+                        } else {
+                            return label;
+                        }
+                    }
+                }
+            }
+        };
+
+        // --- Chart Instances ---
+        let charts = {};
+
+        // --- Tab Navigation Logic ---
+        function switchTab(tabId) {
+            // 1. Update Buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+
+            // 2. Hide all Views
+            document.querySelectorAll('.view-section').forEach(view => {
+                view.classList.add('hidden');
+            });
+
+            // 3. Show Selected View
+            const activeView = document.getElementById(`view-${tabId}`);
+            activeView.classList.remove('hidden');
+
+            // 4. Render/Update Chart for this view
+            renderChart(tabId);
+        }
+
+        // --- Scroll Logic ---
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- Chart Rendering Function ---
+        function renderChart(viewId) {
+            // Delay slightly to ensure container is visible/sized
+            setTimeout(() => {
+                const ctxId = viewId === 'marketing' ? 'marketingChart' :
+                              viewId === 'operations' ? 'opsChart' :
+                              viewId === 'tenant' ? 'tenantChart' : 'roiChart';
+                
+                const canvas = document.getElementById(ctxId);
+                if (!canvas) return;
+                
+                // Destroy existing chart if it exists
+                if (charts[viewId]) {
+                    charts[viewId].destroy();
+                }
+
+                const ctx = canvas.getContext('2d');
+
+                // Data & Config Definitions
+                let config;
+                
+                if (viewId === 'marketing') {
+                    // Stacked Bar: Web Visit vs App DL
+                    config = {
+                        type: 'bar',
+                        data: {
+                            labels: ['Instagram Ads', 'Google Search', 'LINE Official', 'Web Media A', 'In-Store QR'].map(l => wrapLabel(l)),
+                            datasets: [
+                                {
+                                    label: 'Web Visits',
+                                    data: [2500, 1800, 1200, 900, 500],
+                                    backgroundColor: '#E2E8F0', // Slate 200
+                                    stack: 'Stack 0'
+                                },
+                                {
+                                    label: 'App Downloads (CV)',
+                                    data: [450, 120, 300, 50, 380],
+                                    backgroundColor: '#F97316', // Orange 500
+                                    stack: 'Stack 0'
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: tooltipPlugin,
+                            scales: {
+                                x: { stacked: true, grid: { display: false } },
+                                y: { stacked: true, beginAtZero: true }
+                            }
+                        }
+                    };
+                } else if (viewId === 'operations') {
+                    // Mixed: Line (Active Users) + Bar (Campaign Effect)
+                    config = {
+                        type: 'line',
+                        data: {
+                            labels: ['Week 1', 'Week 2', 'Week 3 (Campaign)', 'Week 4', 'Week 5'].map(l => wrapLabel(l)),
+                            datasets: [
+                                {
+                                    label: 'Active Users (MAU)',
+                                    data: [12000, 12500, 14800, 14200, 15100],
+                                    borderColor: '#2563EB', // Blue 600
+                                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                                    fill: true,
+                                    tension: 0.4,
+                                    yAxisID: 'y'
+                                },
+                                {
+                                    label: 'Rank Up Count',
+                                    type: 'bar',
+                                    data: [50, 60, 200, 80, 90],
+                                    backgroundColor: '#F59E0B', // Amber 500
+                                    yAxisID: 'y1'
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: tooltipPlugin,
+                            scales: {
+                                y: { type: 'linear', display: true, position: 'left' },
+                                y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false } }
+                            }
+                        }
+                    };
+                } else if (viewId === 'tenant') {
+                    // Horizontal Bar: Visit Rate ranking
+                    config = {
+                        type: 'bar',
+                        indexAxis: 'y',
+                        data: {
+                            labels: ['Cafe A (Coffee)', 'Shop B (Apparel)', 'Shop C (Books)', 'Shop D (Cosmetics)', 'Shop E (Goods)'].map(l => wrapLabel(l)),
+                            datasets: [
+                                {
+                                    label: 'Article Views',
+                                    data: [1200, 800, 600, 950, 400],
+                                    backgroundColor: '#94A3B8', // Slate 400
+                                },
+                                {
+                                    label: 'Actual Visits (Detected)',
+                                    data: [150, 120, 180, 90, 60],
+                                    backgroundColor: '#10B981', // Emerald 500
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: tooltipPlugin,
+                            scales: {
+                                x: { beginAtZero: true }
+                            }
+                        }
+                    };
+                } else if (viewId === 'management') {
+                    // Doughnut: Cost vs Value
+                    config = {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Manual Report Cost', 'System Cost', 'Profit Uplift'].map(l => wrapLabel(l)),
+                            datasets: [{
+                                data: [10, 30, 60],
+                                backgroundColor: ['#CBD5E1', '#2563EB', '#F97316'],
+                                borderWidth: 0
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                ...tooltipPlugin.plugins,
+                                legend: { position: 'right' }
+                            },
+                            cutout: '70%'
+                        }
+                    };
+                }
+
+                charts[viewId] = new Chart(ctx, config);
+
+            }, 50);
+        }
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initial render
+            switchTab('marketing');
+        });
+
+    </script>
+</body>
+</html>

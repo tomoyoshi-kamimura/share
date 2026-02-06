@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>② OPA様向け データドリブン成長戦略のご提案</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #FDFBF7; /* Warm Neutral Background */
+            color: #4A4A4A;
+        }
+        
+        /* Chart Container Styling - MANDATORY constraint adherence */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 100%; /* Responsive handling */
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Custom Scrollbar for dashboard panels */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ccc; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #aaa; 
+        }
+
+        .nav-item.active {
+            background-color: #E5E0D8;
+            border-left: 4px solid #D97706; /* Accent Amber */
+            font-weight: 700;
+        }
+
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+
+    <!-- Chosen Palette: Warm Neutrals (Base: #FDFBF7, Secondary: #E5E0D8, Accent: #D97706/Blue-Gray) -->
+    <!-- Application Structure Plan: 
+         Structure: Dashboard-style SPA with a left sidebar navigation representing the "4 Layers" of the proposal.
+         Flow: 
+         1. Intro (Problem/Concept) -> Users understand the "Black Box" issue.
+         2. Marketing View -> Visualizing Acquisition (Web -> App).
+         3. Operations View -> Visualizing Nurturing (App Usage/Rank).
+         4. Tenant View -> Visualizing Content efficacy.
+         5. Management View -> ROI and Partnership Roadmap.
+         Why: This structure directly answers the prompt's request to separate the story for Marketing, Ops, Tenants, and Management, 
+         while proving the "One Package" concept through a unified interface.
+    -->
+    <!-- Visualization & Content Choices:
+         - Flowcharts (HTML/CSS Grid): To show the data pipeline without SVG.
+         - Chart.js: For dynamic data simulation (e.g., changing ad spend affects chart).
+         - Interactive Cards: To show detailed metrics defined in the source report (Miles, Ranks).
+         - Justification: Provides a "tangible" feel of the proposed system.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="flex flex-col h-screen overflow-hidden text-slate-700">
+
+    <!-- Top Header -->
+    <header class="bg-white border-b border-gray-200 h-16 flex items-center justify-between px-6 z-10 shadow-sm flex-shrink-0">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-slate-800 text-white rounded flex items-center justify-center font-bold text-lg">O</div>
+            <h1 class="text-xl font-bold tracking-wide">OPA <span class="text-gray-400 font-normal text-sm ml-2">Data-Driven Growth Project</span></h1>
+        </div>
+        <div class="text-sm font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+            Phase 1 Proposal Draft
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+        <!-- Sidebar Navigation -->
+        <nav class="w-64 bg-white border-r border-gray-200 flex flex-col flex-shrink-0 overflow-y-auto">
+            <div class="p-6">
+                <h2 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">提案セクション</h2>
+                <ul class="space-y-1">
+                    <li>
+                        <button onclick="navigate('overview')" id="nav-overview" class="nav-item active w-full text-left px-4 py-3 rounded-r-lg text-sm transition-colors hover:bg-gray-50">
+                            📊 提案概要・全体像
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="navigate('marketing')" id="nav-marketing" class="nav-item w-full text-left px-4 py-3 rounded-r-lg text-sm transition-colors hover:bg-gray-50">
+                            🎯 1. 集客分析 <span class="text-xs text-gray-400 block mt-1">マーケティング担当様向け</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="navigate('operations')" id="nav-operations" class="nav-item w-full text-left px-4 py-3 rounded-r-lg text-sm transition-colors hover:bg-gray-50">
+                            📱 2. アプリ活用・育成 <span class="text-xs text-gray-400 block mt-1">運用担当様向け</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="navigate('tenant')" id="nav-tenant" class="nav-item w-full text-left px-4 py-3 rounded-r-lg text-sm transition-colors hover:bg-gray-50">
+                            🛍️ 3. コンテンツ評価 <span class="text-xs text-gray-400 block mt-1">テナント担当様向け</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="navigate('management')" id="nav-management" class="nav-item w-full text-left px-4 py-3 rounded-r-lg text-sm transition-colors hover:bg-gray-50">
+                            📈 4. 経営サマリー・伴走 <span class="text-xs text-gray-400 block mt-1">経営層・館長様向け</span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="mt-auto p-6 border-t border-gray-100 bg-slate-50">
+                <div class="text-xs text-gray-500 mb-2 font-bold">PROPOSAL BY</div>
+                <div class="flex items-center gap-2">
+                    <div class="w-6 h-6 bg-slate-300 rounded-full flex items-center justify-center text-[10px]">S</div>
+                    <span class="text-sm font-medium">SnowDecks & Prosysta</span>
+                </div>
+                <p class="text-xs text-gray-400 mt-2">ワンパッケージの伴走支援</p>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 bg-[#FDFBF7] overflow-y-auto p-8 relative" id="main-content">
+            <!-- Content will be injected here via JS -->
+        </main>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Data Store based on Source Reports
+        const reportData = {
+            overview: {
+                title: "集客からファン化まで、顧客行動の「全貌」を可視化する",
+                subtitle: "現状の課題と目指す世界観（Before / After）",
+                content: `
+                    <div class="animate-fade-in space-y-8">
+                        <div class="bg-white p-6 rounded-xl card-shadow border border-gray-100">
+                            <h3 class="text-lg font-bold mb-4 border-b pb-2">現状の課題：データの「ブラックボックス」化</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                                <div class="p-4 bg-gray-50 rounded-lg">
+                                    <div class="text-3xl mb-2">🕵️‍♂️</div>
+                                    <div class="font-bold text-gray-700">広告効果が見えない</div>
+                                    <div class="text-sm text-gray-500 mt-1">Webで集客しても、誰がアプリを入れて来店したか追跡できない</div>
+                                </div>
+                                <div class="p-4 bg-gray-50 rounded-lg">
+                                    <div class="text-3xl mb-2">🐌</div>
+                                    <div class="font-bold text-gray-700">集計が手動で遅い</div>
+                                    <div class="text-sm text-gray-500 mt-1">週報・月報作成に工数が取られ、施策の振り返りが次週以降になる</div>
+                                </div>
+                                <div class="p-4 bg-gray-50 rounded-lg">
+                                    <div class="text-3xl mb-2">📉</div>
+                                    <div class="font-bold text-gray-700">データの分断</div>
+                                    <div class="text-sm text-gray-500 mt-1">Web（GA4）とアプリ（活動）が別管理でLTVが見えない</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl card-shadow border-l-4 border-amber-500">
+                            <h3 class="text-lg font-bold mb-4">ご提案：統合データ分析基盤の構築</h3>
+                            <p class="text-sm text-gray-600 mb-6">「集客データ（Web）」と「活動データ（アプリ）」をBigQuery上で統合。リアルタイムな意思決定を実現します。</p>
+                            
+                            <!-- Custom Flow Diagram using HTML/Grid (No SVG) -->
+                            <div class="grid grid-cols-1 md:grid-cols-5 gap-2 items-center text-center text-xs font-bold">
+                                <div class="bg-red-50 border border-red-200 p-4 rounded-lg flex flex-col gap-2 h-full justify-center">
+                                    <span class="text-red-500 text-lg">Web / 広告</span>
+                                    <span>Google Analytics 4</span>
+                                    <span class="font-normal text-[10px] text-gray-500">集客データ</span>
+                                </div>
+                                <div class="text-gray-300 text-xl">➜</div>
+                                <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg flex flex-col gap-2 h-full justify-center">
+                                    <span class="text-blue-500 text-lg">アプリ / 館内</span>
+                                    <span>AWS (Activity)</span>
+                                    <span class="font-normal text-[10px] text-gray-500">育成データ</span>
+                                </div>
+                                <div class="text-gray-300 text-xl">➜</div>
+                                <div class="bg-slate-800 text-white p-4 rounded-lg shadow-lg flex flex-col gap-2 h-full justify-center relative transform scale-105">
+                                    <span class="text-amber-400 text-lg">BigQuery</span>
+                                    <span>統合データベース</span>
+                                    <div class="absolute -top-3 -right-3 bg-amber-500 text-white text-[10px] px-2 py-1 rounded-full">CORE</div>
+                                </div>
+                                <div class="text-gray-300 text-xl">➜</div>
+                                <div class="bg-white border-2 border-amber-500 border-dashed p-4 rounded-lg flex flex-col gap-2 h-full justify-center">
+                                    <span class="text-amber-600 text-lg">Real-time BI</span>
+                                    <span>ダッシュボード</span>
+                                    <span class="font-normal text-[10px] text-gray-500">全社共有</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            marketing: {
+                title: "1. 集客分析（マーケティング担当様向け）",
+                subtitle: "「どの広告が、本当にアプリ会員を連れてきたのか？」を特定する",
+                desc: "Web広告やSNSからの流入が、単なる「閲覧」で終わっているのか、実際の「アプリDL・会員登録」に繋がっているのかを可視化します。ROI（投資対効果）の低い施策を即座にカットし、効果の高い施策へ予算を集中できます。",
+                chartId: "marketingChart",
+                chartType: "bar"
+            },
+            operations: {
+                title: "2. アプリ活用・育成（運用担当様向け）",
+                subtitle: "「ダウンロード後、ファンに育っているか？」を追跡する",
+                desc: "会員ランク（ブロンズ〜プラチナ）の推移や、マイル（来店・購買）の利用状況を分析。単なる会員数ではなく、「稼働している会員」を増やすための施策（クーポン、イベント）の効果を測定します。",
+                chartId: "opsChart",
+                chartType: "line"
+            },
+            tenant: {
+                title: "3. コンテンツ評価（テナント担当様向け）",
+                subtitle: "「どのショップ情報が、来店を促したか？」を評価する",
+                desc: "アプリ内のショップニュースや特集記事の閲覧データを分析。閲覧者が実際にその週末に来店したか（Web to Offline）の相関を見ることで、テナントへのフィードバックや、人気テナントとのコラボ施策立案に役立てます。",
+                chartId: "tenantChart",
+                chartType: "horizontalBar"
+            },
+            management: {
+                title: "4. 経営サマリー・伴走支援（経営層向け）",
+                subtitle: "データに基づく迅速な意思決定と、継続的な成長支援",
+                desc: "週次の手動レポートを撤廃し、リアルタイムな経営ダッシュボードへ。さらに、ツール導入だけでなく、定例会での分析報告・施策提案までを「ワンパッケージ」で提供し、社内のデータ人材不足を補完します。",
+                chartId: "roiChart",
+                chartType: "doughnut" // Using a mix in the render function
+            }
+        };
+
+        // Current State
+        let currentSection = 'overview';
+        let charts = {};
+
+        // DOM Elements
+        const mainContent = document.getElementById('main-content');
+
+        // Initial Render
+        window.addEventListener('DOMContentLoaded', () => {
+            navigate('overview');
+        });
+
+        // Navigation Function
+        function navigate(sectionId) {
+            // Update State
+            currentSection = sectionId;
+
+            // Update UI (Nav styles)
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.getElementById(`nav-${sectionId}`).classList.add('active');
+
+            // Render Content
+            renderContent(sectionId);
+        }
+
+        // Content Rendering Logic
+        function renderContent(sectionId) {
+            const data = reportData[sectionId];
+            
+            if (sectionId === 'overview') {
+                mainContent.innerHTML = `
+                    <div class="mb-8">
+                        <h2 class="text-2xl font-bold mb-2">${data.title}</h2>
+                        <p class="text-gray-500">${data.subtitle}</p>
+                    </div>
+                    ${data.content}
+                `;
+            } else if (sectionId === 'management') {
+                // Special Layout for Management/Partnership
+                mainContent.innerHTML = `
+                    <div class="animate-fade-in">
+                        <div class="mb-8">
+                            <h2 class="text-2xl font-bold mb-2">${data.title}</h2>
+                            <p class="text-gray-500">${data.subtitle}</p>
+                            <p class="mt-4 text-sm bg-white p-4 rounded border border-gray-200 leading-relaxed">
+                                ${data.desc}
+                            </p>
+                        </div>
+
+                        <!-- KPI Cards -->
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                            <div class="bg-white p-4 rounded-lg shadow-sm border-t-4 border-amber-500 text-center">
+                                <div class="text-xs text-gray-400">レポート作成工数</div>
+                                <div class="text-2xl font-bold text-gray-800">0<span class="text-xs font-normal">時間</span></div>
+                                <div class="text-xs text-green-500 font-bold">▼ 100%削減</div>
+                            </div>
+                            <div class="bg-white p-4 rounded-lg shadow-sm border-t-4 border-blue-500 text-center">
+                                <div class="text-xs text-gray-400">アプリ稼働率</div>
+                                <div class="text-2xl font-bold text-gray-800">18.5<span class="text-xs font-normal">%</span></div>
+                                <div class="text-xs text-green-500 font-bold">▲ 3.2pt改善</div>
+                            </div>
+                            <div class="bg-white p-4 rounded-lg shadow-sm border-t-4 border-green-500 text-center">
+                                <div class="text-xs text-gray-400">施策PDCAサイクル</div>
+                                <div class="text-2xl font-bold text-gray-800">週次<span class="text-xs font-normal">化</span></div>
+                                <div class="text-xs text-gray-500">（旧：月次）</div>
+                            </div>
+                            <div class="bg-white p-4 rounded-lg shadow-sm border-t-4 border-purple-500 text-center">
+                                <div class="text-xs text-gray-400">データ活用コスト</div>
+                                <div class="text-2xl font-bold text-gray-800">最適<span class="text-xs font-normal">化</span></div>
+                                <div class="text-xs text-gray-500">伴走支援込み</div>
+                            </div>
+                        </div>
+
+                        <!-- Roadmap / Partnership Visual -->
+                        <div class="bg-white p-6 rounded-xl card-shadow mb-8">
+                            <h3 class="text-lg font-bold mb-4">ワンパッケージの伴走支援ロードマップ</h3>
+                            <div class="relative pl-8 border-l-2 border-gray-200 space-y-8">
+                                <div class="relative">
+                                    <div class="absolute -left-[41px] bg-amber-500 w-6 h-6 rounded-full border-4 border-white"></div>
+                                    <h4 class="font-bold text-gray-800">Phase 1: 可視化・基盤構築（即時）</h4>
+                                    <p class="text-sm text-gray-600 mt-1">手動集計の自動化と、リアルタイムダッシュボードの導入。まずは「現状を正しく見る」環境を作ります。</p>
+                                </div>
+                                <div class="relative">
+                                    <div class="absolute -left-[41px] bg-blue-500 w-6 h-6 rounded-full border-4 border-white"></div>
+                                    <h4 class="font-bold text-gray-800">Phase 2: 施策連動・改善（〜3ヶ月）</h4>
+                                    <p class="text-sm text-gray-600 mt-1">定例会にてデータを元にした施策（キャンペーン・特集）を提案。結果を検証し、勝ちパターンを見つけます。</p>
+                                </div>
+                                <div class="relative">
+                                    <div class="absolute -left-[41px] bg-green-500 w-6 h-6 rounded-full border-4 border-white"></div>
+                                    <h4 class="font-bold text-gray-800">Phase 3: 自動化・パーソナライズ（〜6ヶ月）</h4>
+                                    <p class="text-sm text-gray-600 mt-1">「このランクの人にはこのクーポン」といったMA（マーケティングオートメーション）的なアプローチへ拡張します。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Dashboard Layout for Marketing, Ops, Tenant
+                mainContent.innerHTML = `
+                    <div class="animate-fade-in h-full flex flex-col">
+                        <div class="mb-6 flex-shrink-0">
+                            <h2 class="text-2xl font-bold mb-2">${data.title}</h2>
+                            <p class="text-gray-500">${data.subtitle}</p>
+                            <p class="mt-4 text-sm bg-white p-4 rounded border border-gray-200 leading-relaxed">
+                                ${data.desc}
+                            </p>
+                        </div>
+
+                        <!-- Interactive Controls Area -->
+                        <div class="bg-white p-4 rounded-lg shadow-sm mb-4 border border-gray-100 flex flex-wrap gap-4 items-center flex-shrink-0">
+                            <span class="text-xs font-bold text-gray-500 uppercase">Interactive Sim:</span>
+                            <div class="flex items-center gap-2">
+                                <label class="text-xs">期間:</label>
+                                <select class="text-sm border rounded px-2 py-1 bg-gray-50" onchange="updateChartSim('${sectionId}')">
+                                    <option>直近30日</option>
+                                    <option>今期累計</option>
+                                </select>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <label class="text-xs">セグメント:</label>
+                                <select class="text-sm border rounded px-2 py-1 bg-gray-50" onchange="updateChartSim('${sectionId}')">
+                                    <option>全体</option>
+                                    <option>新規会員のみ</option>
+                                    <option>既存会員のみ</option>
+                                </select>
+                            </div>
+                            <button class="ml-auto text-xs bg-amber-500 hover:bg-amber-600 text-white px-3 py-1 rounded transition-colors" onclick="alert('実際のダッシュボードでは、この条件で即座にデータが再集計されます。')">
+                                ▶ 分析実行
+                            </button>
+                        </div>
+
+                        <!-- Chart Area -->
+                        <div class="bg-white p-6 rounded-xl card-shadow flex-1 min-h-0 flex flex-col">
+                            <h3 class="text-sm font-bold text-gray-400 mb-4 uppercase tracking-wider">Analysis Visualization</h3>
+                            <div class="chart-container flex-1">
+                                <canvas id="${data.chartId}"></canvas>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-gray-100 text-xs text-gray-400 text-center">
+                                ※ このグラフはデモ用のダミーデータで描画されています。実際にはBigQueryのデータが連携されます。
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Initialize Chart after DOM injection
+                setTimeout(() => initChart(sectionId, data.chartId), 0);
+            }
+        }
+
+        // Chart Logic
+        function initChart(sectionId, canvasId) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            
+            // Cleanup existing chart if any
+            if (charts[canvasId]) {
+                charts[canvasId].destroy();
+            }
+
+            let config = {};
+
+            if (sectionId === 'marketing') {
+                // Stacked Bar: Traffic Source -> Conversion
+                config = {
+                    type: 'bar',
+                    data: {
+                        labels: ['Instagram広告', 'Google検索', 'LINE公式', 'Web記事A', '店舗QR'],
+                        datasets: [
+                            {
+                                label: 'Web訪問数 (Click)',
+                                data: [1200, 1900, 800, 500, 300],
+                                backgroundColor: '#E2E8F0',
+                                stack: 'Stack 0',
+                            },
+                            {
+                                label: 'アプリDL数 (CV)',
+                                data: [150, 80, 200, 60, 250], // High CV rate for QR and LINE
+                                backgroundColor: '#D97706', // Amber accent
+                                stack: 'Stack 0',
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                callbacks: {
+                                    afterBody: function(context) {
+                                        const web = context[0].raw;
+                                        const app = context[1].raw;
+                                        const rate = ((app / (web + app)) * 100).toFixed(1);
+                                        return `CVR (推定): ${rate}%`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: { stacked: true },
+                            y: { stacked: true }
+                        }
+                    }
+                };
+            } else if (sectionId === 'operations') {
+                // Line Chart: Active Users & Rank Up
+                config = {
+                    type: 'line',
+                    data: {
+                        labels: ['1月1週', '1月2週', '1月3週', '1月4週', '2月1週'],
+                        datasets: [
+                            {
+                                label: 'アクティブ会員数',
+                                data: [5000, 5200, 5100, 5800, 6200],
+                                borderColor: '#3B82F6',
+                                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                                fill: true,
+                                tension: 0.4
+                            },
+                            {
+                                label: 'マイル利用回数',
+                                data: [1200, 1300, 1250, 1800, 2100], // Campaign effect
+                                borderColor: '#F59E0B',
+                                borderDash: [5, 5],
+                                tension: 0.4
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false,
+                        },
+                    }
+                };
+            } else if (sectionId === 'tenant') {
+                // Horizontal Bar: Tenant Ranking
+                config = {
+                    type: 'bar',
+                    indexAxis: 'y',
+                    data: {
+                        labels: ['Shop A (カフェ)', 'Shop B (アパレル)', 'Shop C (雑貨)', 'Shop D (コスメ)', 'Shop E (書籍)'],
+                        datasets: [
+                            {
+                                label: 'アプリお気に入り登録数',
+                                data: [350, 280, 220, 190, 150],
+                                backgroundColor: '#64748B',
+                            },
+                            {
+                                label: '記事経由の来店検知数',
+                                data: [120, 40, 80, 95, 30],
+                                backgroundColor: '#10B981', // Green for success/visit
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: { stacked: false },
+                            y: { stacked: true }
+                        }
+                    }
+                };
+            }
+
+            charts[canvasId] = new Chart(ctx, config);
+        }
+
+        // Mock Simulation Update
+        function updateChartSim(sectionId) {
+            let chartId;
+            if (sectionId === 'marketing') chartId = 'marketingChart';
+            else if (sectionId === 'operations') chartId = 'opsChart';
+            else if (sectionId === 'tenant') chartId = 'tenantChart';
+
+            if (charts[chartId]) {
+                const chart = charts[chartId];
+                // Randomize data slightly to simulate "Filtering" or "Scenario Change"
+                chart.data.datasets.forEach((dataset) => {
+                    dataset.data = dataset.data.map(val => {
+                        const change = Math.floor(Math.random() * 20) - 10;
+                        return Math.max(0, val + change);
+                    });
+                });
+                chart.update();
+            }
+        }
+
+    </script>
+</body>
+</html>

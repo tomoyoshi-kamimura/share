@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>① OPA様 データ活用推進プロジェクト提案</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans JP', sans-serif; background-color: #f8fafc; }
+        
+        /* Chart Container Styling - Mandatory Strictness */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container { height: 350px; }
+        }
+
+        /* Interactive Card Styling */
+        .interactive-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .interactive-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .interactive-card.active {
+            border-color: #0d9488; /* teal-600 */
+            background-color: #f0fdfa; /* teal-50 */
+        }
+
+        /* Icon Container */
+        .icon-box {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 0.5rem;
+            background-color: #e2e8f0; /* slate-200 */
+            color: #475569; /* slate-600 */
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        .interactive-card:hover .icon-box, .interactive-card.active .icon-box {
+            background-color: #ccfbf1; /* teal-100 */
+            color: #0f766e; /* teal-700 */
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+    </style>
+    <!-- Chosen Palette: Teal & Slate (Professional, Clean, Trustworthy) -->
+    <!-- Application Structure Plan:
+         1. Hero: Executive Summary - The core value proposition.
+         2. Current Issues: 3 Cards (Data, People, Timing) focusing on the "Why".
+         3. Solution Architecture: A visual flow of the new Data Pipeline (Collection -> Analysis -> Action).
+         4. Impact Simulation: Interactive Chart.js tool to demonstrate ROI potential.
+         5. Roadmap: A clear 3-phase timeline.
+         This structure ensures "One View, One Message" logic.
+    -->
+    <!-- Visualization & Content Choices:
+         - Icons: Switched from Emojis to Inline SVGs to fix garbled text issues.
+         - Charts: Chart.js Line chart for simulation.
+         - Diagrams: HTML/Flexbox flowcharts for architecture and roadmap.
+    -->
+    <!-- CONFIRMATION: NO SVG image files used (only inline code). NO Mermaid JS used. -->
+</head>
+<body class="text-slate-700 antialiased">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur shadow-sm border-b border-slate-200">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold text-teal-700 tracking-tight">OPA <span class="text-slate-500 text-sm font-normal ml-2">Data Project</span></span>
+                </div>
+                <div class="hidden md:flex space-x-8 items-center">
+                    <button onclick="scrollToSection('intro')" class="text-slate-600 hover:text-teal-600 text-sm font-medium transition">概要</button>
+                    <button onclick="scrollToSection('issues')" class="text-slate-600 hover:text-teal-600 text-sm font-medium transition">現状課題</button>
+                    <button onclick="scrollToSection('solution')" class="text-slate-600 hover:text-teal-600 text-sm font-medium transition">解決策</button>
+                    <button onclick="scrollToSection('simulation')" class="text-slate-600 hover:text-teal-600 text-sm font-medium transition">効果試算</button>
+                    <button onclick="scrollToSection('roadmap')" class="text-slate-600 hover:text-teal-600 text-sm font-medium transition">ロードマップ</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-24">
+
+        <!-- Section 1: Hero / Executive Summary -->
+        <section id="intro" class="relative bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100">
+            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-teal-400 to-teal-600"></div>
+            <div class="p-8 md:p-16 text-center max-w-4xl mx-auto">
+                <span class="inline-block py-1 px-3 rounded-full bg-teal-50 text-teal-700 text-xs font-bold uppercase tracking-wider mb-6 border border-teal-100">Project Mission</span>
+                <h1 class="text-3xl md:text-5xl font-bold text-slate-800 leading-tight mb-6">
+                    「勘と経験」から<br>
+                    <span class="text-teal-600">「データに基づく科学的運営」</span>へ
+                </h1>
+                <p class="text-lg text-slate-600 leading-relaxed mb-10">
+                    現在、店舗・アプリ・Webに散在しているデータを統合し、顧客一人ひとりを解像度高く理解するプラットフォームを構築します。
+                    これにより、テナント最適化とLTV（顧客生涯価値）の最大化を実現します。
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <button onclick="scrollToSection('simulation')" class="px-8 py-4 bg-teal-600 text-white rounded-xl font-bold shadow-lg hover:bg-teal-700 transform hover:-translate-y-1 transition duration-200 flex items-center justify-center gap-2">
+                        <!-- Chart Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg>
+                        効果シミュレーションを見る
+                    </button>
+                    <button onclick="scrollToSection('issues')" class="px-8 py-4 bg-white text-teal-700 border border-teal-200 rounded-xl font-bold shadow hover:bg-teal-50 transition duration-200">
+                        現状の課題を確認する
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Current Issues -->
+        <section id="issues">
+            <div class="mb-10 text-center md:text-left">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4">1. 現状の課題整理</h2>
+                <p class="text-slate-500 max-w-2xl">スライド内に散在していた課題を、3つの核心的なボトルネックとして整理しました。</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Issue 1: Data Silos -->
+                <div class="interactive-card bg-white p-8 rounded-2xl shadow-sm border border-slate-200 cursor-pointer" onclick="showIssueDetail('data', this)">
+                    <div class="icon-box">
+                        <!-- Database Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-3">データの分断</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        POS、アプリ、ポイントカードのデータが別々のDBにあり、顧客IDで紐付いていないため、顧客の全体像が見えない。
+                    </p>
+                </div>
+
+                <!-- Issue 2: Intuition -->
+                <div class="interactive-card bg-white p-8 rounded-2xl shadow-sm border border-slate-200 cursor-pointer" onclick="showIssueDetail('intuition', this)">
+                    <div class="icon-box">
+                        <!-- Brain/User Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-3">属人的な判断</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        テナント入れ替えや販促施策が、担当者の経験則に依存。効果検証も不十分で、成功事例の横展開ができていない。
+                    </p>
+                </div>
+
+                <!-- Issue 3: Timing -->
+                <div class="interactive-card bg-white p-8 rounded-2xl shadow-sm border border-slate-200 cursor-pointer" onclick="showIssueDetail('timing', this)">
+                    <div class="icon-box">
+                        <!-- Clock Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-3">施策の遅延</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        データの集計・レポート作成に手作業が多く発生。月次レポートを待つため、タイムリーな対策が打てない。
+                    </p>
+                </div>
+            </div>
+
+            <!-- Detail Box (Hidden by default) -->
+            <div id="issue-detail-box" class="hidden mt-6 bg-slate-50 border border-slate-200 rounded-xl p-6 animate-fade-in">
+                <h4 id="issue-detail-title" class="text-lg font-bold text-teal-700 mb-2"></h4>
+                <p id="issue-detail-text" class="text-slate-700 text-sm"></p>
+            </div>
+        </section>
+
+        <!-- Section 3: Solution -->
+        <section id="solution">
+            <div class="mb-10 text-center md:text-left">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4">2. 解決策：統合データ基盤の構築</h2>
+                <p class="text-slate-500 max-w-2xl">バラバラなデータを一箇所に集め、誰でも使える状態にし、アクションへ繋げる仕組みです。</p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-lg border border-slate-100 p-8 md:p-12">
+                <!-- Diagram Container -->
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0 relative">
+                    
+                    <!-- Phase 1: Input -->
+                    <div class="w-full md:w-1/3 p-4 bg-slate-50 rounded-xl border border-slate-200 text-center z-10 relative">
+                        <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-slate-600 text-white text-[10px] px-2 py-1 rounded font-bold tracking-wider">INPUT</div>
+                        <div class="flex justify-center mb-4 text-teal-600">
+                            <!-- Inbox Icon -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-slate-700 mb-2">収集・統合</h3>
+                        <p class="text-xs text-slate-500 mb-3">POS / アプリ / Wi-Fi / EC</p>
+                        <div class="text-left bg-white p-3 rounded border border-slate-100 text-xs text-slate-600 space-y-1">
+                            <p>● 顧客ID統合 (名寄せ)</p>
+                            <p>● クラウドDWHへの蓄積</p>
+                        </div>
+                    </div>
+
+                    <!-- Connector Arrow (Desktop) -->
+                    <div class="hidden md:block w-full h-1 bg-slate-200 absolute top-1/2 left-0 z-0"></div>
+                    <div class="hidden md:block absolute top-1/2 left-1/3 transform -translate-y-1/2 -ml-2 bg-white p-1 z-10 text-slate-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </div>
+
+                    <!-- Connector Arrow (Mobile) -->
+                    <div class="md:hidden text-slate-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+                    </div>
+
+                    <!-- Phase 2: Analysis -->
+                    <div class="w-full md:w-1/3 p-4 bg-teal-50 rounded-xl border border-teal-200 text-center z-10 relative md:mx-4 shadow-sm">
+                        <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-teal-600 text-white text-[10px] px-2 py-1 rounded font-bold tracking-wider">CORE</div>
+                        <div class="flex justify-center mb-4 text-teal-600">
+                            <!-- Pie Chart Icon -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-teal-800 mb-2">分析・可視化</h3>
+                        <p class="text-xs text-teal-600 mb-3">BIダッシュボード</p>
+                        <div class="text-left bg-white p-3 rounded border border-teal-100 text-xs text-slate-600 space-y-1">
+                            <p>● 顧客セグメンテーション</p>
+                            <p>● RFM分析 / LTV予測</p>
+                        </div>
+                    </div>
+
+                     <!-- Connector Arrow (Desktop) -->
+                     <div class="hidden md:block absolute top-1/2 right-1/3 transform -translate-y-1/2 -mr-2 bg-white p-1 z-10 text-slate-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </div>
+
+                    <!-- Connector Arrow (Mobile) -->
+                    <div class="md:hidden text-slate-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+                    </div>
+
+                    <!-- Phase 3: Action -->
+                    <div class="w-full md:w-1/3 p-4 bg-slate-50 rounded-xl border border-slate-200 text-center z-10 relative">
+                        <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-slate-600 text-white text-[10px] px-2 py-1 rounded font-bold tracking-wider">OUTPUT</div>
+                        <div class="flex justify-center mb-4 text-teal-600">
+                            <!-- Rocket Icon -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path><path d="M9 12H4s.55-3.03 2-4.5c1.62-1.63 5-2.5 5-2.5"></path><path d="M12 15v5s3.03-.55 4.5-2c1.63-1.62 2.5-5 2.5-5"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-slate-700 mb-2">アクション</h3>
+                        <p class="text-xs text-slate-500 mb-3">MA / アプリ通知 / 接客</p>
+                        <div class="text-left bg-white p-3 rounded border border-slate-100 text-xs text-slate-600 space-y-1">
+                            <p>● One to One 配信</p>
+                            <p>● 来館検知リアルタイム通知</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Simulation -->
+        <section id="simulation">
+            <div class="mb-10 text-center md:text-left">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4">3. 導入効果シミュレーション</h2>
+                <p class="text-slate-500 max-w-2xl">データ活用により「来店頻度」や「買い回り」が向上した場合の、売上インパクトを試算できます。</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Controls -->
+                <div class="lg:col-span-1 bg-white p-6 rounded-2xl shadow-md border border-slate-200 h-fit">
+                    <h3 class="font-bold text-slate-700 mb-6 border-b pb-2 flex items-center gap-2">
+                        <!-- Sliders Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+                        パラメータ設定
+                    </h3>
+                    
+                    <div class="space-y-8">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2 flex justify-between">
+                                <span>施策対象者数 (会員数)</span>
+                                <span id="userBaseVal" class="font-bold text-teal-700">50,000人</span>
+                            </label>
+                            <input type="range" id="userBase" min="10000" max="100000" step="5000" value="50000" class="w-full accent-teal-600 cursor-pointer h-2 bg-slate-200 rounded-lg appearance-none">
+                            <div class="flex justify-between text-xs text-slate-400 mt-1">
+                                <span>1万</span>
+                                <span>10万</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2 flex justify-between">
+                                <span>来店頻度改善率</span>
+                                <span id="freqBoostVal" class="font-bold text-teal-700">+5%</span>
+                            </label>
+                            <input type="range" id="freqBoost" min="0" max="20" step="1" value="5" class="w-full accent-teal-600 cursor-pointer h-2 bg-slate-200 rounded-lg appearance-none">
+                            <div class="flex justify-between text-xs text-slate-400 mt-1">
+                                <span>0%</span>
+                                <span>+20%</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2 flex justify-between">
+                                <span>客単価改善率</span>
+                                <span id="spendBoostVal" class="font-bold text-teal-700">+3%</span>
+                            </label>
+                            <input type="range" id="spendBoost" min="0" max="20" step="1" value="3" class="w-full accent-teal-600 cursor-pointer h-2 bg-slate-200 rounded-lg appearance-none">
+                            <div class="flex justify-between text-xs text-slate-400 mt-1">
+                                <span>0%</span>
+                                <span>+20%</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-teal-50 p-4 rounded-xl border border-teal-100 mt-6">
+                            <p class="text-xs text-teal-800 font-bold mb-1 uppercase tracking-wider">想定年間売上増分</p>
+                            <p id="totalImpact" class="text-3xl font-bold text-teal-600">¥0</p>
+                            <p class="text-[10px] text-teal-600 mt-1 text-right">※試算モデルに基づく予測値</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart -->
+                <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-md border border-slate-200 flex flex-col justify-between">
+                    <h3 class="font-bold text-slate-700 mb-2">売上効果推移イメージ (月次)</h3>
+                    <div class="chart-container">
+                        <canvas id="impactChart"></canvas>
+                    </div>
+                    <div class="mt-4 flex gap-4 text-xs text-slate-500 bg-slate-50 p-3 rounded-lg">
+                        <div class="flex items-center gap-1">
+                            <span class="w-3 h-3 rounded-full bg-slate-400"></span>
+                            <span>現状推移</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <span class="w-3 h-3 rounded-full bg-teal-500"></span>
+                            <span>施策導入後 (効果は段階的に発現)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Roadmap -->
+        <section id="roadmap">
+            <div class="mb-10 text-center md:text-left">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4">4. 導入ロードマップ</h2>
+                <p class="text-slate-500 max-w-2xl">短期的な成果（Quick Win）を作りつつ、中長期的な基盤構築を進める3フェーズ構成です。</p>
+            </div>
+
+            <div class="relative border-l-2 border-slate-200 ml-4 md:ml-8 space-y-12">
+                <!-- Phase 1 -->
+                <div class="relative pl-8 md:pl-12">
+                    <div class="absolute -left-[9px] top-0 w-5 h-5 bg-teal-600 rounded-full border-4 border-white shadow-sm"></div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between mb-4">
+                            <h3 class="text-xl font-bold text-teal-700">Phase 1: 可視化とPoC</h3>
+                            <span class="text-xs font-bold bg-teal-100 text-teal-800 px-2 py-1 rounded mt-2 md:mt-0 w-fit">Month 1 - 3</span>
+                        </div>
+                        <ul class="space-y-3">
+                            <li class="flex items-start text-sm text-slate-600">
+                                <svg class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                <span>主要データ（売上・会員）のダッシュボード化による現状把握</span>
+                            </li>
+                            <li class="flex items-start text-sm text-slate-600">
+                                <svg class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                <span>特定テナントでのクーポン配信テスト (PoC)</span>
+                            </li>
+                            <li class="flex items-start text-sm text-slate-600">
+                                <svg class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                <span>データクレンジング要件の定義</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Phase 2 -->
+                <div class="relative pl-8 md:pl-12">
+                    <div class="absolute -left-[9px] top-0 w-5 h-5 bg-white border-4 border-teal-400 rounded-full shadow-sm"></div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between mb-4">
+                            <h3 class="text-xl font-bold text-slate-700">Phase 2: 基盤構築と展開</h3>
+                            <span class="text-xs font-bold bg-slate-100 text-slate-600 px-2 py-1 rounded mt-2 md:mt-0 w-fit">Month 4 - 6</span>
+                        </div>
+                        <ul class="space-y-3">
+                            <li class="flex items-start text-sm text-slate-600">
+                                <svg class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                <span>CDP（顧客データ基盤）の本格構築とID統合</span>
+                            </li>
+                            <li class="flex items-start text-sm text-slate-600">
+                                <svg class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                <span>MAツール連携と自動化シナリオ実装</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Phase 3 -->
+                <div class="relative pl-8 md:pl-12">
+                    <div class="absolute -left-[9px] top-0 w-5 h-5 bg-white border-4 border-slate-300 rounded-full shadow-sm"></div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between mb-4">
+                            <h3 class="text-xl font-bold text-slate-700">Phase 3: 高度化・自走化</h3>
+                            <span class="text-xs font-bold bg-slate-100 text-slate-600 px-2 py-1 rounded mt-2 md:mt-0 w-fit">Month 7+</span>
+                        </div>
+                        <ul class="space-y-3">
+                            <li class="flex items-start text-sm text-slate-600">
+                                <svg class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                <span>AIによる需要予測・在庫最適化</span>
+                            </li>
+                            <li class="flex items-start text-sm text-slate-600">
+                                <svg class="w-5 h-5 text-teal-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                <span>社内分析チームの育成・内製化支援</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="bg-slate-800 text-white rounded-3xl p-10 md:p-16 text-center shadow-xl">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6">次のステップ</h2>
+            <p class="text-slate-300 mb-8 max-w-2xl mx-auto leading-relaxed">
+                まずは貴社の保有データの「簡易診断（無料）」から開始し、
+                Phase 1の具体的なスコープとスケジュールを定義させてください。
+            </p>
+            <button class="px-10 py-4 bg-teal-500 hover:bg-teal-400 text-white font-bold rounded-xl shadow-lg transition transform hover:-translate-y-1">
+                詳細スケジュールを相談する
+            </button>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-10 mt-20">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <p class="text-slate-400 text-sm">&copy; 2026 OPA Data Utilization Project Proposal. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Smooth Scroll
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            const navHeight = 80;
+            const elementPosition = element.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - navHeight;
+        
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: "smooth"
+            });
+        }
+
+        // Issue Detail Interaction
+        function showIssueDetail(type, cardElement) {
+            // UI Reset
+            document.querySelectorAll('.interactive-card').forEach(c => c.classList.remove('active'));
+            cardElement.classList.add('active');
+
+            const detailBox = document.getElementById('issue-detail-box');
+            const titleEl = document.getElementById('issue-detail-title');
+            const textEl = document.getElementById('issue-detail-text');
+
+            // Content Data
+            const content = {
+                data: {
+                    title: "詳細：データのサイロ化問題",
+                    text: "現在、EC会員と店舗会員のデータが統合されていません。これにより、例えば「ECで頻繁に購入しているロイヤル顧客」が店舗に来店しても、新規客として扱われてしまい、適切な接客やオファーが提供できないという機会損失が発生しています。"
+                },
+                intuition: {
+                    title: "詳細：属人化によるリスク",
+                    text: "熟練スタッフの経験則は貴重ですが、それが形式知化されていないため、異動や退職によってノウハウが失われます。また、根拠となる数字がないため、チーム内での合意形成に時間がかかり、施策実行のスピードが低下しています。"
+                },
+                timing: {
+                    title: "詳細：アクションの遅れ",
+                    text: "月次レポートが翌月10日に出るサイクルでは、月の途中で不調に気づいても手が打てません。日次、あるいはリアルタイムに近い頻度でKPIを可視化することで、キャンペーン期間中の軌道修正が可能になります。"
+                }
+            };
+
+            titleEl.textContent = content[type].title;
+            textEl.textContent = content[type].text;
+            
+            detailBox.classList.remove('hidden');
+            // Re-trigger animation
+            detailBox.classList.remove('animate-fade-in');
+            void detailBox.offsetWidth; // trigger reflow
+            detailBox.classList.add('animate-fade-in');
+        }
+
+        // Chart.js Simulation
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('impactChart').getContext('2d');
+            
+            // Base Data (Monthly Revenue Trend - Dummy)
+            const baseData = [100, 105, 98, 110, 115, 112, 120, 125, 122, 130, 135, 140];
+            const labels = ['4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月', '1月', '2月', '3月'];
+
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: '現状推移 (Baseline)',
+                            data: baseData,
+                            borderColor: '#94a3b8', // slate-400
+                            backgroundColor: 'transparent',
+                            borderDash: [5, 5],
+                            borderWidth: 2,
+                            tension: 0.4,
+                            pointRadius: 0
+                        },
+                        {
+                            label: '施策導入後 (Projected)',
+                            data: [...baseData],
+                            borderColor: '#0d9488', // teal-600
+                            backgroundColor: 'rgba(13, 148, 136, 0.1)',
+                            fill: true,
+                            borderWidth: 3,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#0d9488'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                title: function(tooltipItems) {
+                                    const item = tooltipItems[0];
+                                    let label = item.chart.data.labels[item.dataIndex];
+                                    return Array.isArray(label) ? label.join(' ') : label;
+                                },
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + Math.round(context.parsed.y) + ' 百万円';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: { color: '#f1f5f9' },
+                            title: { display: true, text: '売上 (百万円)' }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    },
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    }
+                }
+            });
+
+            // Simulation Logic
+            const userBaseInput = document.getElementById('userBase');
+            const freqInput = document.getElementById('freqBoost');
+            const spendInput = document.getElementById('spendBoost');
+            
+            const userBaseLabel = document.getElementById('userBaseVal');
+            const freqLabel = document.getElementById('freqBoostVal');
+            const spendLabel = document.getElementById('spendBoostVal');
+            const totalImpactLabel = document.getElementById('totalImpact');
+
+            function updateSimulation() {
+                const users = parseInt(userBaseInput.value);
+                const freqRate = 1 + (parseInt(freqInput.value) / 100);
+                const spendRate = 1 + (parseInt(spendInput.value) / 100);
+
+                // Update Labels
+                userBaseLabel.textContent = users.toLocaleString() + '人';
+                freqLabel.textContent = '+' + freqInput.value + '%';
+                spendLabel.textContent = '+' + spendInput.value + '%';
+
+                // Calculate New Trend
+                // Logic: The effect ramps up over the 12 months (implementation time)
+                const newData = baseData.map((val, index) => {
+                    const rampUpFactor = Math.min(1, index / 6); // Full effect by month 6
+                    const liftMultiplier = freqRate * spendRate;
+                    const currentLift = 1 + ((liftMultiplier - 1) * rampUpFactor);
+                    return val * currentLift;
+                });
+
+                chart.data.datasets[1].data = newData;
+                chart.update();
+
+                // Calculate Total Impact (Sum of differences)
+                // Simplified scalar for demo: 1 point = 1 Million Yen * UserBase Scale Factor
+                const scaleFactor = users / 50000; 
+                const oldTotal = baseData.reduce((a, b) => a + b, 0);
+                const newTotal = newData.reduce((a, b) => a + b, 0);
+                const diff = (newTotal - oldTotal) * scaleFactor;
+
+                totalImpactLabel.textContent = `+¥${Math.floor(diff).toLocaleString()} 百万円`;
+            }
+
+            // Listeners
+            userBaseInput.addEventListener('input', updateSimulation);
+            freqInput.addEventListener('input', updateSimulation);
+            spendInput.addEventListener('input', updateSimulation);
+
+            // Initial Run
+            updateSimulation();
+        });
+    </script>
+</body>
+</html>
